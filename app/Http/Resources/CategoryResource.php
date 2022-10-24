@@ -21,15 +21,7 @@ class CategoryResource extends BaseResource
          */
         $category = $this->resource;
 
-        $data = [];
-
-        foreach (Category::RESOURCE_FIELDS as $field) {
-            $data[$field] = $category->{$field};
-        }
-
-        if ($category->relationLoaded('image')) {
-            $data['image'] = ImageResource::make($category->image);
-        }
+        $data = $category->getAttributes();
 
         return $data;
     }

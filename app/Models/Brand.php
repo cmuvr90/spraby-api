@@ -60,16 +60,29 @@ class Brand extends BaseModel
     public const RESOURCE_FIELDS = [
         'id',
         'name',
-        'description'
+        'description',
+        'updated_at',
+        'user_id'
     ];
 
+    /**
+     * @param string $id
+     * @param array $params
+     * @return Model|null
+     */
+    public static function retrieve(string $id, array $params = []): ?Model
+    {
+        return (new Brand())->index($params)->findOrFail($id);
+    }
 
-    public static function list(array $params = [])
+    /**
+     * @param array $params
+     * @return LengthAwarePaginator
+     */
+    public static function list(array $params = []): LengthAwarePaginator
     {
         return (new Brand())->index($params)->paginate();
     }
-
-
 
 //    /**
 //     * @return BelongsTo

@@ -4,10 +4,8 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Category
@@ -39,11 +37,6 @@ class Category extends BaseModel
     /**
      * @var array
      */
-    protected $hidden = ['pivot', 'created_at', 'updated_at'];
-
-    /**
-     * @var array
-     */
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -52,66 +45,24 @@ class Category extends BaseModel
     /**
      * @var array
      */
-    public const RESOURCE_FIELDS = ['id', 'name', 'handle'];
+    public const RESOURCE_FIELDS = ['id', 'name', 'handle', 'created_at', 'updated_at'];
 
     /**
-     * @return BelongsTo
+     * @param string $id
+     * @param array $params
+     * @return Model|null
      */
-    public function image(): BelongsTo
+    public static function retrieve(string $id, array $params = []): ?Model
     {
-        return $this->belongsTo(Image::class);
+        return (new Category())->index($params)->findOrFail($id);
     }
 
     /**
      * @param array $params
-     * @return array
+     * @return LengthAwarePaginator
      */
-    public static function getCategoryData(array $params): array
+    public static function list(array $params = []): LengthAwarePaginator
     {
-        return [
-            'name' => $params['name'],
-            'handle' => $params['handle'],
-        ];
-    }
-
-    /**
-     * @param array $params
-     * @return Category
-     */
-    public static function createCategory(array $params): Category
-    {
-        return (new Category)->create(self::getCategoryData($params));
-    }
-
-    /**
-     * @param array $params
-     * @return $this
-     */
-    public function updateCategory(array $params): Category
-    {
-        $this->updateOrCreate(['id' => $params['id']], self::getCategoryData($params));
-        $this->refreshImage($params['image']['src'] ?? null);
-        return $this;
-    }
-
-    /**
-     * @param array $params
-     * @param string $prefix
-     * @return LengthAwarePaginator|Collection
-     */
-    public static function getCategories(array $params = [], string $prefix = 'categories')
-    {
-        return parent::index($params, $prefix);
-    }
-
-    /**
-     * @param int $id
-     * @param array $params
-     * @return BaseModel|BaseModel[]|Builder|Builder[]|Collection|Model|null
-     */
-    public static function getCategoryById(int $id, array $params)
-    {
-        $fields = isset($params['fields']) ? self::getPrepareFields($params['fields']) : null;
-        return (new Category)->customSelect($fields)->withRelations($params['with'] ?? null)->find($id);
+        return (new Category())->index($params)->paginate();
     }
 }

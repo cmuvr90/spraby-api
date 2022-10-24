@@ -4,58 +4,62 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class BaseModel
  * @package App\Models
  *
  * @method Builder|BaseModel customSelect(?array $fields)
- * @method LengthAwarePaginator|Collection customPaginate(?int $limit)
  * @method Builder|BaseModel search(string $field, string $value)
- * @method Builder|BaseModel sort(string $value)
- * @method Builder|BaseModel whereBrand(int $brandId)
- * @method Builder|BaseModel whereBrandByUserId(int $brandId, ?string $table = '')
- * @method Builder|BaseModel withRelations(string $value)
- * @method Builder|BaseModel getByDefaultParams(array $params, string $prefix)
+ * @method Builder|BaseModel sort(string $field, string $direction)
  */
 class BaseModel extends Model
 {
-
     /**
      * @param array $params
      * @return BaseModel|Builder
      */
     public function index(array $params = []): Builder|BaseModel
     {
-        $fields = $params['fields'] ?? [];
+        $fields = $params['fields'];
+        ['field' => $searchField, 'value' => $searchValue] = $params['search'];
+        ['field' => $sortField, 'direction' => $sortDirection] = $params['sort'];
 
-        return $this->customSelect($fields);
-
-
-//        $limit = $params['limit'] ?? null;
-//        $sort = isset($params['sort']) ? $prefix . '.' . $params['sort'] : null;
-//        $search = $params['search'] ?? null;
-//        $fields = isset($params['fields']) ? self::getPrepareFields($params['fields'], $prefix . '.') : [$prefix . '.*'];
-//        $with = $params['with'] ?? null;
-
-//        return self::customSelect($fields)->search($prefix . '.name', $search)
-//            ->sort($sort)
-//            ->withRelations($with);
-
-
-//        return self::getByDefaultParams($params, $prefix)->customPaginate($limit);
+        return $this->customSelect($fields)
+            ->search($searchField, $searchValue)
+            ->sort($sortField, $sortDirection);
     }
 
     /**
      * @param Builder $query
-     * @param null $fields
+     * @param array|null $fields
      * @return Builder
      */
-    public function scopeCustomSelect(Builder $query, $fields = null): Builder
+    public function scopeCustomSelect(Builder $query, ?array $fields = null): Builder
     {
         return $fields ? $query->select($fields) : $query;
+    }
+
+    /**
+     * @param Builder $query
+     * @param string|null $field
+     * @param string|null $value
+     * @return Builder
+     */
+    public function scopeSearch(Builder $query, ?string $field = null, ?string $value = null): Builder
+    {
+        return $value && $field ? $query->where($field, 'LIKE', '%' . $value . '%') : $query;
+    }
+
+    /**
+     * @param Builder $query
+     * @param string|null $field
+     * @param string|null $direction
+     * @return Builder
+     */
+    public function scopeSort(Builder $query, ?string $field = null, ?string $direction = null): Builder
+    {
+        return $direction && $field ? $query->orderBy($field, $direction) : $query;
     }
 
 

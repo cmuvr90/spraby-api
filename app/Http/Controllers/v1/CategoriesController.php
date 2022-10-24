@@ -2,33 +2,33 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Http\Requests\Brand\BrandListRequest;
-use App\Http\Resources\BrandResource;
-use App\Models\Brand;
+use App\Http\Requests\Category\CategoryListRequest;
+use App\Http\Resources\CategoryResource;
+use App\Models\Category;
 
 /**
- * Class BrandController
+ * Class CategoriesController
  * @package App\Http\Controllers
  */
-class BrandController extends BaseController
+class CategoriesController extends BaseController
 {
     /**
      * @param $id
-     * @param BrandListRequest $request
-     * @return BrandResource
+     * @param CategoryListRequest $request
+     * @return CategoryResource
      */
-    public function retrieve($id, BrandListRequest $request): BrandResource
+    public function retrieve($id, CategoryListRequest $request): CategoryResource
     {
-        return BrandResource::make(Brand::retrieve($id, $request->get('params')));
+        return CategoryResource::make(Category::retrieve($id, $request->get('params')));
     }
 
     /**
-     * @param BrandListRequest $request
+     * @param CategoryListRequest $request
      * @return array
      */
-    public function list(BrandListRequest $request): array
+    public function list(CategoryListRequest $request): array
     {
-        return BrandResource::paginate(Brand::list($request->get('params')));
+        return CategoryResource::paginate(Category::list($request->get('params')));
     }
 
 //    /**
