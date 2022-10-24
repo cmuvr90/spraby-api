@@ -1,16 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
 
-use App\Helpers\RequestHelper;
-use App\Http\Requests\BrandSaveRequest;
-use App\Http\Requests\WithUserIdRequest;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
+use App\Http\Requests\Brand\BrandListRequest;
 use App\Http\Resources\BrandResource;
 use App\Models\Brand;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 /**
  * Class BrandController
@@ -19,9 +13,9 @@ use Illuminate\Http\Response;
 class BrandController extends BaseController
 {
 
-    public function list(Request $request)
+    public function list(BrandListRequest $request)
     {
-        return response(BrandResource::paginate(Brand::list(RequestHelper::getQueryParams($request))));
+        return BrandResource::paginate(Brand::list($request->get('params')));
     }
 
 

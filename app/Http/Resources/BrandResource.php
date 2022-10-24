@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Helpers\RequestHelper;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 
@@ -22,23 +21,8 @@ class BrandResource extends BaseResource
          * @var Brand $brand
          */
         $brand = $this->resource;
+        $data = $brand->getAttributes();
 
-        $data = [];
-
-        $fields = RequestHelper::getQueryFields($request);
-
-        foreach (Brand::RESOURCE_FIELDS as $field) {
-            if (!$fields || in_array($field, $fields)) $data[$field] = $brand->{$field};
-        }
-
-//        if ($brand->relationLoaded('image')) {
-//            $data['image'] = ImageResource::make($brand->image);
-//        }
-//
-//        if ($brand->relationLoaded('user')) {
-//            $data['user'] = UserResource::make($brand->user);
-//        }
-//
 //        if ($brand->relationLoaded('collections')) {
 //            $data['collections'] = CollectionResource::collection($brand->collections);
 //        }

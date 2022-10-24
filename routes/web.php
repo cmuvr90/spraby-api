@@ -38,11 +38,6 @@ Route::group(['prefix' => '/manager'], static function () {
 
 Route::group(['prefix' => '/api'], static function () {
 
-    Route::group(['prefix' => '/brands'], static function () {
-        Route::get('/list', [Controllers\BrandController::class, 'list'])->name('brandsGet');
-    });
-
-
 //    Route::resource('brands', Controllers\BrandController::class)->except(['create', 'edit', 'destroy']);
 //    Route::group(['prefix' => '/brands'], static function () {
 //        Route::delete('/remove', [Controllers\BrandController::class, 'remove'])->name('removeBrands');
