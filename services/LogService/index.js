@@ -2,6 +2,10 @@ import log4js from "log4js";
 
 const config = {
   appenders: {
+    user_service: {
+      type: 'file',
+      filename: `tmp/logs/user_service.log`,
+    },
     controller: {
       type: 'file',
       filename: `tmp/logs/controller.log`,
@@ -12,6 +16,7 @@ const config = {
     }
   },
   categories: {
+    user_service: {appenders: ['user_service'], level: "all"},
     controller: {appenders: ['controller'], level: "all"},
     default: {appenders: ['default'], level: "all"}
   }
