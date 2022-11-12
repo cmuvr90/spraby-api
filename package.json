@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon ./server/index.js --inspect=0.0.0.0:9229 --ignore node_modules"
   },
   "repository": {
     "type": "git",
@@ -21,14 +22,18 @@
   "dependencies": {
     "@babel/preset-env": "^7.20.2",
     "express": "^4.18.2",
+    "inversify": "^6.0.1",
     "mongoose": "^6.7.2",
-    "process": "^0.11.10"
+    "nodemon": "^2.0.20",
+    "process": "^0.11.10",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@babel/register": "^7.18.9",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "log4js": "^6.7.0",
     "mongodb": "^4.11.0"
   }
 }
