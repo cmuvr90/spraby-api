@@ -36,7 +36,6 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
-    "log4js": "^6.7.0",
     "mongodb": "^4.11.0",
     "mongoose-long": "^0.6.0"
   }
