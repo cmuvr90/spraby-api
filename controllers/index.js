@@ -58,7 +58,7 @@ export class Controller {
   errorResponse = async (e, code = 406, isLog = true) => {
     const message = typeof e === 'string' ? e : e.message || e;
     if (isLog) {
-      await this.logError({QUERY: this.getQuery(), REQUEST_BODY: this.getBody(), ERROR: message});
+      await this.logError(message, {QUERY: this.getQuery(), REQUEST_BODY: this.getBody()});
     }
     return this.res.status(code).send({status: Controller.STATUSES.FAILED, error: message});
   }
@@ -76,10 +76,12 @@ export class Controller {
 
   /**
    *
+   * @param e
    * @param data
+   * @returns {Promise<void>}
    */
-  async logError(data) {
-    await this.log.error(`${this._getLogPrefix()} ${JSON.stringify(data, null, 2)}`);
+  async logError(e, data) {
+    await this.log.error(e, `${this._getLogPrefix()} ${JSON.stringify(data, null, 2)}`);
   }
 
   /**
