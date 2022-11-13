@@ -7,7 +7,7 @@ export default class UserService {
    */
   constructor(User, LogService) {
     this.user = User;
-    this.log = LogService.createLogger('user_service');
+    this.log = LogService.createLogger('UserService');
   }
 
   /**

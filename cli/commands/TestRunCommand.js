@@ -3,7 +3,7 @@ import {TYPES} from '../../ioc/types';
 class TestRunCommand {
 
   constructor(ioc) {
-    this.UserService = ioc.get(TYPES.UserService);
+    this.ProductService = ioc.get(TYPES.ProductService);
   }
 
   /**
@@ -12,10 +12,8 @@ class TestRunCommand {
    * @returns {Promise<void>}
    */
   async handle(params) {
-
-      console.log('params = ', params);
-      const users = await this.UserService.user.get();
-      console.log(users);
+    const products = await this.ProductService.generate(1)
+    console.log(products);
   }
 }
 

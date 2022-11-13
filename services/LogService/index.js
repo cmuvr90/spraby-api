@@ -1,39 +1,66 @@
-import log4js from "log4js";
+import fs from "fs";
+import moment from 'moment';
 
-const config = {
-  appenders: {
-    user_service: {
-      type: 'file',
-      filename: `tmp/logs/user_service.log`,
-    },
-    controller: {
-      type: 'file',
-      filename: `tmp/logs/controller.log`,
-    },
-    default: {
-      type: 'file',
-      filename: `tmp/logs/default.log`,
-    }
-  },
-  categories: {
-    user_service: {appenders: ['user_service'], level: "all"},
-    controller: {appenders: ['controller'], level: "all"},
-    default: {appenders: ['default'], level: "all"}
-  }
-};
-
-/**
- *
- */
 export default class LogService {
-  constructor() {
-    if (!!LogService.instance) return LogService.instance;
-    log4js.configure(config);
-    LogService.instance = this;
-    return this;
+
+  constructor(config) {
+    this.withTerminal = config?.withTerminal ?? false;
+    this.withDate = config?.withDate ?? false;
+    this.logFolder = config?.logFolder ?? 'tmp/logs';
   }
 
-  createLogger(serviceName = 'default') {
-    return log4js.getLogger(serviceName);
+  /**
+   *
+   * @param name
+   * @param message
+   * @returns {Promise<void>}
+   */
+  async info(name, message) {
+    await this.writeLog(name, `${name}-INFO`, message);
+  }
+
+  /**
+   *
+   * @param name
+   * @param message
+   * @param e
+   * @returns {Promise<void>}
+   */
+  async error(name, message, e = null) {
+    const errorMessage = e ? ` Error: ${e.message || e}` : '';
+    const logMessage = `${message}${errorMessage}`;
+    await this.writeLog(name, `${name}-ERROR`, logMessage);
+  }
+
+  /**
+   *
+   * @param name
+   * @param fileName
+   * @param value
+   * @returns {Promise<void>}
+   */
+  async writeLog(name, fileName, value) {
+    const logMessage = `${this._getDate()}[${name}]` + value;
+    await fs.appendFileSync(`${this.logFolder}/${fileName}.log`, logMessage + '\n');
+    if (this.withTerminal) console.log(logMessage);
+  }
+
+  /**
+   *
+   * @returns {string|string}
+   * @private
+   */
+  _getDate = () => this.withDate ? `[${moment().format()}] ` : '';
+
+  /**
+   *
+   * @param name
+   * @returns {{error: (function(*=, *=): Promise<void>), info: (function(*=): Promise<void>)}}
+   */
+  createLogger(name = 'default') {
+    return {
+      info: message => this.info(name, message),
+      error: (e, message) => this.error(name, message, e)
+    };
   }
 }

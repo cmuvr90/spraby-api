@@ -3,7 +3,7 @@ import Model from './index';
 
 const FIELDS = {
   userId: {type: mongoose.Schema.Types.ObjectId, ref: "Users"},
-  imageId: {type: mongoose.Schema.Types.ObjectId, ref: "Images"},
+  image: {type: String, default: null},
   name: {type: String, default: null},
   description: {type: String, default: null},
 };

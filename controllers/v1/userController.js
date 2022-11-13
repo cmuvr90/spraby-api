@@ -12,9 +12,9 @@ export class UserController extends Controller {
     // const log = this.getService(TYPES.LogService).createLogger();
 
     try {
-      return this.successResponse();
+      return await this.successResponse({}, true);
     } catch (e) {
-      return this.errorResponse(e);
+      return await this.errorResponse(e);
     }
   }
 }
