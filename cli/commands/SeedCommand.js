@@ -5,6 +5,8 @@ import Categories from '../../models/Categories';
 import Collections from '../../models/Collections';
 import Users from '../../models/Users';
 import Brands from '../../models/Brands';
+import Variants from '../../models/Variants';
+import Products from '../../models/Products';
 
 class SeedCommand {
 
@@ -23,6 +25,37 @@ class SeedCommand {
     await this.createCollections();
     await this.createUsers();
     await this.createBrands();
+    await this.createProducts();
+  }
+
+  async createProducts() {
+    const brands = await Brands.find();
+    const categories = await Categories.find();
+
+    const productsData = getProductsData();
+
+    await Variants.deleteMany();
+    await Products.deleteMany();
+
+    const products = [];
+
+    for (const productData of productsData) {
+      const brand = brands.find(b => b.name === productData.brandId);
+      const category = categories.find(c => c.name === productData.categoryId);
+      const variantsData = productData.variants.map(v => ({title: v.join('/'), values: v}));
+      const variants = await Variants.insertMany(variantsData);
+
+      products.push({
+        ...productData,
+        handle: getHandle(productData.title),
+        brandId: brand.id,
+        categoryId: category.id,
+        variants: variants.map(i => i.id)
+      })
+    }
+
+    await Products.insertMany(products);
+    console.log('create products...');
   }
 
   /**
@@ -117,6 +150,68 @@ class SeedCommand {
 }
 
 export default SeedCommand;
+
+/**
+ *
+ * @returns {({brandId: string, description: string, variants: string[][], title: string, categoryId: string}|{brandId: string, description: string, variants: [[string, string, string], [string, string, string], [string, string, string]], title: string, categoryId: string})[]}
+ */
+function getProductsData() {
+  return [
+    {
+      brandId: 'Мужской брэнд',
+      categoryId: 'Куртки мужские',
+      title: 'Куртка мужская теплая',
+      description: 'Куртка мужская теплая на зиму',
+      variants: [
+        ['белый', 'xl', 'хлопок'],
+        ['белый', 'xxl', 'хлопок'],
+        ['белый', 'xxxl', 'хлопок'],
+        ['красный', 'xl', 'хлопок'],
+        ['красный', 'xxl', 'хлопок'],
+        ['красный', 'xxxl', 'хлопок'],
+      ]
+    },
+    {
+      brandId: 'Мужской брэнд',
+      categoryId: 'Куртки мужские',
+      title: 'Куртка мужская легкая',
+      description: 'Куртка мужская легкая на весну',
+      variants: [
+        ['синий', 'xl', 'хлопок'],
+        ['синий', 'xxl', 'хлопок'],
+        ['синий', 'xxxl', 'хлопок'],
+      ]
+    },
+    {
+      brandId: 'Мужской брэнд',
+      categoryId: 'Обувь мужская',
+      title: 'Кроссовки',
+      description: 'Кроссовки мужские',
+      variants: [
+        ['синий', '41'],
+        ['синий', '42'],
+        ['синий', '43'],
+        ['синий', '44'],
+        ['синий', '45'],
+        ['красный', '41'],
+        ['красный', '42'],
+        ['красный', '43'],
+        ['красный', '44'],
+        ['красный', '45'],
+      ]
+    },
+    {
+      brandId: 'Мужской брэнд',
+      categoryId: 'Украшения мужские',
+      title: 'Кольцо',
+      description: 'Кольцо мужское',
+      variants: [
+        ['серебро'],
+        ['золото']
+      ]
+    },
+  ]
+}
 
 /**
  *
@@ -224,13 +319,13 @@ function getCategoriesData() {
       name: 'Украшения мужские',
       title: 'Украшения',
       description: 'Украшения мужские',
-      options: ['Цвет', 'Материал общий']
+      options: ['Материал общий']
     },
     {
       name: 'Украшения женские',
       title: 'Украшения',
       description: 'Украшения женские',
-      options: ['Цвет', 'Материал общий']
+      options: ['Материал общий']
     }
   ]
 }
