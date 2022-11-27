@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Model from './index';
+import Options from './Options';
 
 const FIELDS = {
   name: {type: String, required: true},
@@ -9,7 +10,7 @@ const FIELDS = {
   image: {type: String, default: null},
   options: [
     {
-      type: mongoose.Schema.Types.ObjectId, ref: "Options"
+      type: mongoose.Schema.Types.ObjectId, ref: Options
     }
   ]
 };

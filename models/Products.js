@@ -1,15 +1,18 @@
 import mongoose from "mongoose";
 import Model from './index';
+import Brands from './Brands';
+import Categories from './Categories';
+import Variants from './Variants';
 
 const FIELDS = {
-  brandId: {type: mongoose.Schema.Types.ObjectId, ref: "Brands"},
-  categoryId: {type: mongoose.Schema.Types.ObjectId, ref: "Categories"},
+  brandId: {type: mongoose.Schema.Types.ObjectId, ref: Brands},
+  categoryId: {type: mongoose.Schema.Types.ObjectId, ref: Categories},
   title: {type: String, required: true},
   handle: {type: String, required: true},
   description: {type: String, default: null},
   image: {type: String, default: null},
   variants: [
-    {type: mongoose.Schema.Types.ObjectId, ref: "Variants"}
+    {type: mongoose.Schema.Types.ObjectId, ref: Variants}
   ]
 };
 
