@@ -40,16 +40,16 @@ class SeedCommand {
     const products = [];
 
     for (const productData of productsData) {
-      const brand = brands.find(b => b.name === productData.brandId);
-      const category = categories.find(c => c.name === productData.categoryId);
+      const brand = brands.find(b => b.name === productData.brand);
+      const category = categories.find(c => c.name === productData.category);
       const variantsData = productData.variants.map(v => ({title: v.join('/'), values: v}));
       const variants = await Variants.insertMany(variantsData);
 
       products.push({
         ...productData,
         handle: getHandle(productData.title),
-        brandId: brand.id,
-        categoryId: category.id,
+        brand: brand.id,
+        category: category.id,
         variants: variants.map(i => i.id)
       })
     }
@@ -67,10 +67,10 @@ class SeedCommand {
     const categories = await Categories.find();
 
     const brands = getBrandsData().map(i => {
-      const user = users.find(u => u.name === i.userId);
+      const user = users.find(u => u.name === i.user);
       return {
         ...i,
-        userId: user.id,
+        user: user.id,
         categories: i.categories.map(category => {
           const handle = getHandle(category);
           const categoryData = categories.find(item => item.handle === handle);
@@ -153,13 +153,13 @@ export default SeedCommand;
 
 /**
  *
- * @returns {({brandId: string, description: string, variants: string[][], title: string, categoryId: string}|{brandId: string, description: string, variants: [[string, string, string], [string, string, string], [string, string, string]], title: string, categoryId: string})[]}
+ * @returns {({description: string, variants: string[][], category: string, title: string, brand: string}|{brandId: string, description: string, variants: [[string, string, string], [string, string, string], [string, string, string]], title: string, category: string}|{brandId: string, description: string, variants: string[][], title: string, category: string}|{brandId: string, description: string, variants: [[string], [string]], title: string, category: string})[]}
  */
 function getProductsData() {
   return [
     {
-      brandId: 'Мужской брэнд',
-      categoryId: 'Куртки мужские',
+      brand: 'Мужской брэнд',
+      category: 'Куртки мужские',
       title: 'Куртка мужская теплая',
       description: 'Куртка мужская теплая на зиму',
       variants: [
@@ -172,8 +172,8 @@ function getProductsData() {
       ]
     },
     {
-      brandId: 'Мужской брэнд',
-      categoryId: 'Куртки мужские',
+      brand: 'Мужской брэнд',
+      category: 'Куртки мужские',
       title: 'Куртка мужская легкая',
       description: 'Куртка мужская легкая на весну',
       variants: [
@@ -183,8 +183,8 @@ function getProductsData() {
       ]
     },
     {
-      brandId: 'Мужской брэнд',
-      categoryId: 'Обувь мужская',
+      brand: 'Мужской брэнд',
+      category: 'Обувь мужская',
       title: 'Кроссовки',
       description: 'Кроссовки мужские',
       variants: [
@@ -201,8 +201,8 @@ function getProductsData() {
       ]
     },
     {
-      brandId: 'Мужской брэнд',
-      categoryId: 'Украшения мужские',
+      brand: 'Мужской брэнд',
+      category: 'Украшения мужские',
       title: 'Кольцо',
       description: 'Кольцо мужское',
       variants: [
@@ -215,18 +215,18 @@ function getProductsData() {
 
 /**
  *
- * @returns {({name: string, description: string, categories: [string, string, string], userId: string}|{name: string, description: string, categories: [string, string, string], userId: string})[]}
+ * @returns {({name: string, description: string, categories: [string, string, string], user: string}|{name: string, description: string, categories: [string, string, string], user: string})[]}
  */
 function getBrandsData() {
   return [
     {
-      userId: 'Manager1',
+      user: 'Manager1',
       name: 'Мужской брэнд',
       description: 'Мужской',
       categories: ['Куртки мужские', 'Обувь мужская', 'Украшения мужские'],
     },
     {
-      userId: 'Manager2',
+      user: 'Manager2',
       name: 'Женский брэнд',
       description: 'Женский',
       categories: ['Куртки женские', 'Обувь женская', 'Украшения женские'],

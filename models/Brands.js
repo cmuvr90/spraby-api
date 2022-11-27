@@ -4,7 +4,7 @@ import Users from './Users';
 import Categories from './Categories';
 
 const FIELDS = {
-  userId: {type: mongoose.Schema.Types.ObjectId, ref: Users},
+  user: {type: mongoose.Schema.Types.ObjectId, ref: Users},
   image: {type: String, default: null},
   name: {type: String, default: null},
   description: {type: String, default: null},
