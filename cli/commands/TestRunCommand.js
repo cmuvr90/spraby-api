@@ -12,8 +12,7 @@ class TestRunCommand {
    * @returns {Promise<void>}
    */
   async handle(params) {
-    const products = await this.ProductService.generate(1)
-    console.log(products);
+    //
   }
 }
 

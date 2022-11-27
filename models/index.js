@@ -13,6 +13,7 @@ export default class Model {
 
     this.model.statics.FIELDS = fields;
     this.model.statics.updateOrCreate = this.updateOrCreate;
+    this.model.statics.findPrepare = this.findPrepare;
     this.model.statics.prepareItem = this.prepareItem;
 
     return this.model;
@@ -34,6 +35,14 @@ export default class Model {
 
     return await this.findOneAndUpdate(query, update, options).exec();
   };
+
+  /**
+   *
+   * @returns {Promise<*>}
+   */
+  findPrepare = async function () {
+    return (await this.find()).map(i => this.prepareItem(i));
+  }
 
   /**
    *

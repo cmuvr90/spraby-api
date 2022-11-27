@@ -5,6 +5,7 @@ require("@babel/register")({
 });
 
 const TestRunCommand = require('./commands/TestRunCommand').default;
+const SeedCommand = require('./commands/SeedCommand').default;
 
 const parseArgs = require("minimist");
 const process = require("process");
@@ -14,6 +15,7 @@ cli.createCliApp().then(app => {
 
   const commands = {
     "test:run": new TestRunCommand(app.ioc),
+    "seed:run": new SeedCommand(app.ioc),
   };
 
   const args = parseArgs(process.argv.slice(2));
