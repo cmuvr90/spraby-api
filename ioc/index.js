@@ -8,7 +8,6 @@ import ProductModel from '../models/Products';
 import LogService from '../services/LogService';
 import UserService from '../services/UserService';
 import ProductService from '../services/ProductService';
-import ModelService from '../services/ModelService';
 
 //UserService
 decorate(inject(TYPES.UserModel), UserService, 0);
@@ -27,8 +26,8 @@ decorate(injectable(), LogService);
 //services binding
 const container = new Container();
 
-container.bind(TYPES.UserModel).toDynamicValue(() => new ModelService(UserModel));
-container.bind(TYPES.ProductModel).toDynamicValue(() => new ModelService(ProductModel));
+container.bind(TYPES.UserModel).toDynamicValue(() => UserModel);
+container.bind(TYPES.ProductModel).toDynamicValue(() => ProductModel);
 
 container.bind(TYPES.UserService).to(UserService);
 container.bind(TYPES.ProductService).to(ProductService);

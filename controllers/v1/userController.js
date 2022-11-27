@@ -1,5 +1,5 @@
 import {Controller} from '..';
-// import {TYPES} from '../../ioc/types';
+import {TYPES} from '../../ioc/types';
 
 export class UserController extends Controller {
 
@@ -8,11 +8,11 @@ export class UserController extends Controller {
    * @returns {Promise<*>}
    */
   index = async () => {
-    // const UserService = this.getService(TYPES.UserService);
-    // const log = this.getService(TYPES.LogService).createLogger();
+    const UserService = this.getService(TYPES.UserService);
+    const data = await UserService.user.findPrepare();
 
     try {
-      return await this.successResponse({}, true);
+      return await this.successResponse(data, true);
     } catch (e) {
       return await this.errorResponse(e);
     }

@@ -58,8 +58,8 @@ export default class Model {
     return {
       id: `${item._id}`,
       ...data,
-      createdAt: moment(item.createdAt).format('YYYY-MM-DD'),
-      updatedAt: moment(item.updatedAt).format('YYYY-MM-DD')
+      createdAt: moment(item.createdAt).format(),
+      updatedAt: moment(item.updatedAt).format()
     };
   }
 }
