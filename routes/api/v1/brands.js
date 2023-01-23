@@ -1,4 +1,4 @@
-import {BrandController} from '../../../controllers/v1/brandController';
+import {BrandController} from '../../../controllers/v1/BrandController';
 
 /**
  *
@@ -6,5 +6,5 @@ import {BrandController} from '../../../controllers/v1/brandController';
  * @param prefix
  */
 export default function (app, prefix) {
-  app.get(`${prefix}/brands`, (req, res) => new BrandController(req, res).index());
+  app.get(`${prefix}/brands/list`, (req, res) => new BrandController(req, res).index());
 }
