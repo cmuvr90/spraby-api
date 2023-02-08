@@ -1,10 +1,9 @@
-import {CollectionController} from '../../../controllers/v1/CollectionController';
+import CollectionController from '../../../controllers/v1/CollectionController';
 
 /**
  *
- * @param app
- * @param prefix
+ * @param router
  */
-export default function (app, prefix) {
-  app.get(`${prefix}/collections/list`, (req, res) => new CollectionController(req, res).index());
+export default function (router) {
+  router.get('/collections/list', CollectionController.index);
 }

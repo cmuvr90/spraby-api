@@ -1,3 +1,4 @@
+import Router from 'express';
 import users from './users';
 import brands from './brands';
 import categories from './categories';
@@ -6,15 +7,18 @@ import options from './options';
 import products from './products';
 import variants from './variants';
 
-const prefix = '/api/v1'
+const apiRouterV1 = new Router();
 
-export default function (app) {
-  app.get(`/`, async (req, res) => res.send('Api V1 started! 🛫'));
-  users(app, prefix);
-  brands(app, prefix);
-  categories(app, prefix);
-  collections(app, prefix);
-  options(app, prefix);
-  products(app, prefix);
-  variants(app, prefix);
-}
+apiRouterV1.get(`/`, async (req, res, next) => {
+  return res.send('Api V1 started! 🛫')
+});
+
+users(apiRouterV1)
+brands(apiRouterV1)
+categories(apiRouterV1)
+collections(apiRouterV1)
+options(apiRouterV1)
+products(apiRouterV1)
+variants(apiRouterV1)
+
+export default apiRouterV1;

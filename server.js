@@ -4,8 +4,9 @@ import cors from 'cors';
 import path from 'path';
 import {connectToMongo} from './database';
 import config from './config';
-import routes from './routes';
+import {apiRouterV1} from './routes';
 import container from './ioc';
+import {error, init} from './middlewares';
 
 const app = express();
 
@@ -16,12 +17,10 @@ app.use(cors({origin: '*'}));
 app.use('/public', express.static(path.join(__dirname, 'static')));
 
 app.set('ioc', container);
-app.use((req, res, next) => {
-  req.body.ioc = app.get('ioc');
-  next();
-});
 
-routes(app);
+app.use(init(app));
+app.use('/api/v1', apiRouterV1);
+app.use(error);
 
 (async function start() {
   const isConnected = await connectToMongo(config.database.url);

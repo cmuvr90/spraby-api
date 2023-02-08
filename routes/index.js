@@ -1,5 +1,5 @@
-import api from './api/v1';
+import apiRouterV1 from './api/v1';
 
-export default function (app) {
-  api(app);
+export {
+  apiRouterV1
 }

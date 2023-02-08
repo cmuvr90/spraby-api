@@ -1,10 +1,9 @@
-import {BrandController} from '../../../controllers/v1/BrandController';
+import BrandController from '../../../controllers/v1/BrandController';
 
 /**
  *
- * @param app
- * @param prefix
+ * @param router
  */
-export default function (app, prefix) {
-  app.get(`${prefix}/brands/list`, (req, res) => new BrandController(req, res).index());
+export default function (router) {
+  router.get('/brands/list', BrandController.index);
 }

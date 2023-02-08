@@ -1,10 +1,11 @@
-import {UserController} from '../../../controllers/v1/UserController';
+import UserController from '../../../controllers/v1/UserController';
+import {LoginRequest} from '../../../requests/LoginRequest';
 
 /**
  *
- * @param app
- * @param prefix
+ * @param router
  */
-export default function (app, prefix) {
-  app.get(`${prefix}/users/list`, (req, res) => new UserController(req, res).index());
+export default function (router) {
+  router.get('/users/list', UserController.index);
+  router.post('/users/login', LoginRequest, UserController.login);
 }

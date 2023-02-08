@@ -1,10 +1,9 @@
-import {ProductController} from '../../../controllers/v1/ProductController';
+import ProductController from '../../../controllers/v1/ProductController';
 
 /**
  *
- * @param app
- * @param prefix
+ * @param router
  */
-export default function (app, prefix) {
-  app.get(`${prefix}/products/list`, (req, res) => new ProductController(req, res).index());
+export default function (router) {
+  router.get('/products/list', ProductController.index);
 }

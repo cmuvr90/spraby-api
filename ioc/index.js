@@ -9,6 +9,7 @@ import CollectionModel from '../models/Collections';
 import OptionModel from '../models/Options';
 import ProductModel from '../models/Products';
 import VariantModel from '../models/Variants';
+import SessionModel from '../models/Sessions';
 
 
 import LogService from '../services/LogService';
@@ -20,10 +21,12 @@ import OptionService from '../services/OptionService';
 import ProductService from '../services/ProductService';
 import VariantService from '../services/VariantService';
 import ModelService from '../services/ModelService';
+import SessionService from '../services/SessionService';
 
 //UserService
 decorate(inject(TYPES.UserModel), UserService, 0);
-decorate(inject(TYPES.LogService), UserService, 1);
+decorate(inject(TYPES.SessionService), UserService, 1);
+decorate(inject(TYPES.LogService), UserService, 2);
 decorate(injectable(), UserService);
 
 //BrandService
@@ -56,6 +59,12 @@ decorate(inject(TYPES.VariantModel), VariantService, 0);
 decorate(inject(TYPES.LogService), VariantService, 1);
 decorate(injectable(), VariantService);
 
+//SessionService
+decorate(inject(TYPES.SessionModel), SessionService, 0);
+decorate(inject(TYPES.SessionConfig), SessionService, 1);
+decorate(inject(TYPES.LogService), SessionService, 2);
+decorate(injectable(), SessionService);
+
 //LogService
 decorate(inject(TYPES.LogConfig), LogService, 0);
 decorate(injectable(), LogService);
@@ -63,13 +72,14 @@ decorate(injectable(), LogService);
 //services binding
 const container = new Container();
 
-container.bind(TYPES.UserModel).toDynamicValue(() => new ModelService(UserModel));
+container.bind(TYPES.UserModel).toDynamicValue(() => UserModel);
 container.bind(TYPES.BrandModel).toDynamicValue(() => new ModelService(BrandModel));
 container.bind(TYPES.CategoryModel).toDynamicValue(() => new ModelService(CategoryModel));
 container.bind(TYPES.CollectionModel).toDynamicValue(() => new ModelService(CollectionModel));
 container.bind(TYPES.OptionModel).toDynamicValue(() => new ModelService(OptionModel));
 container.bind(TYPES.ProductModel).toDynamicValue(() => new ModelService(ProductModel));
 container.bind(TYPES.VariantModel).toDynamicValue(() => new ModelService(VariantModel));
+container.bind(TYPES.SessionModel).toDynamicValue(() => SessionModel);
 
 container.bind(TYPES.UserService).to(UserService);
 container.bind(TYPES.BrandService).to(BrandService);
@@ -79,7 +89,9 @@ container.bind(TYPES.OptionService).to(OptionService);
 container.bind(TYPES.ProductService).to(ProductService);
 container.bind(TYPES.VariantService).to(VariantService);
 container.bind(TYPES.LogService).to(LogService);
+container.bind(TYPES.SessionService).to(SessionService);
 
 container.bind(TYPES.LogConfig).toDynamicValue(() => (config.log));
+container.bind(TYPES.SessionConfig).toDynamicValue(() => (config.session));
 
 export default container;

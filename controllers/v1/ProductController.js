@@ -1,20 +1,23 @@
-import {Controller} from '..';
 import {TYPES} from '../../ioc/types';
 
-export class ProductController extends Controller {
+class ProductController {
 
   /**
    *
+   * @param req
+   * @param res
+   * @param next
    * @returns {Promise<*>}
    */
-  index = async () => {
-    const ProductService = this.getService(TYPES.ProductService);
-    const products = await ProductService.product.get();
-
+  index = async (req, res, next) => {
     try {
-      return this.successResponse(products, true);
+      const ProductService = req.getService(TYPES.ProductService);
+      const products = await ProductService.product.get();
+      return res.sendSuccess(products);
     } catch (e) {
-      return this.errorResponse(e);
+      next(e)
     }
   }
 }
+
+export default new ProductController()

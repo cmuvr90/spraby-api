@@ -11,36 +11,35 @@ export default class LogService {
 
   /**
    *
-   * @param name
+   * @param fileName
    * @param message
    * @returns {Promise<void>}
    */
-  async info(name, message) {
-    await this.writeLog(name, `${name}-INFO`, message);
+  async info(fileName, message) {
+    await this.writeLog(fileName, message);
   }
 
   /**
    *
-   * @param name
+   * @param fileName
    * @param message
-   * @param e
+   * @param code
+   * @param errors
    * @returns {Promise<void>}
    */
-  async error(name, message, e = null) {
-    const errorMessage = e ? ` Error: ${e.message || e}` : '';
-    const logMessage = `${message}${errorMessage}`;
-    await this.writeLog(name, `${name}-ERROR`, logMessage);
+  async error(fileName = '', message = '', code = '', errors = []) {
+    const logMessage = `Message: ${message}; Code: ${code}; Error: ${errors.join(', ')}`
+    await this.writeLog(fileName, logMessage);
   }
 
   /**
    *
-   * @param name
    * @param fileName
    * @param value
    * @returns {Promise<void>}
    */
-  async writeLog(name, fileName, value) {
-    const logMessage = `${this._getDate()}[${name}]` + value;
+  async writeLog(fileName, value) {
+    const logMessage = `${this._getDate()}` + value;
     await fs.appendFileSync(`${this.logFolder}/${fileName}.log`, logMessage + '\n');
     if (this.withTerminal) console.log(logMessage);
   }
@@ -55,12 +54,12 @@ export default class LogService {
   /**
    *
    * @param name
-   * @returns {{error: (function(*=, *=): Promise<void>), info: (function(*=): Promise<void>)}}
+   * @returns {{error: (function(*=, *=, *=): Promise<void>), info: (function(*=): Promise<void>)}}
    */
   createLogger(name = 'default') {
     return {
       info: message => this.info(name, message),
-      error: (e, message) => this.error(name, message, e)
+      error: (message, code, errors) => this.error(name, message, code, errors)
     };
   }
 }

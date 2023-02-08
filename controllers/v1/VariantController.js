@@ -1,20 +1,23 @@
-import {Controller} from '..';
 import {TYPES} from '../../ioc/types';
 
-export class VariantController extends Controller {
+class VariantController {
 
   /**
    *
+   * @param req
+   * @param res
+   * @param next
    * @returns {Promise<*>}
    */
-  index = async () => {
-    const VariantService = this.getService(TYPES.VariantService);
-    const variants = await VariantService.variant.get();
-
+  index = async (req, res, next) => {
     try {
-      return this.successResponse(variants, true);
+      const VariantService = req.getService(TYPES.VariantService);
+      const variants = await VariantService.variant.get();
+      return res.sendSuccess(variants);
     } catch (e) {
-      return this.errorResponse(e);
+      next(e)
     }
   }
 }
+
+export default new VariantController()

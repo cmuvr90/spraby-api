@@ -1,20 +1,23 @@
-import {Controller} from '..';
 import {TYPES} from '../../ioc/types';
 
-export class CollectionController extends Controller {
+class CollectionController {
 
   /**
    *
+   * @param req
+   * @param res
+   * @param next
    * @returns {Promise<*>}
    */
-  index = async () => {
-    const CollectionService = this.getService(TYPES.CollectionService);
-    const collections = await CollectionService.collection.get();
-
+  index = async (req, res, next) => {
     try {
-      return this.successResponse(collections, true);
+      const CollectionService = req.getService(TYPES.CollectionService);
+      const collections = await CollectionService.collection.get();
+      return res.sendSuccess(collections);
     } catch (e) {
-      return this.errorResponse(e);
+      next(e)
     }
   }
 }
+
+export default new CollectionController();

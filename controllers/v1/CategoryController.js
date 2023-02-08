@@ -1,20 +1,23 @@
-import {Controller} from '..';
 import {TYPES} from '../../ioc/types';
 
-export class CategoryController extends Controller {
+class CategoryController {
 
   /**
    *
+   * @param req
+   * @param res
+   * @param next
    * @returns {Promise<*>}
    */
-  index = async () => {
-    const CategoryService = this.getService(TYPES.CategoryService);
-    const categories = await CategoryService.category.get();
-
+  index = async (req, res, next) => {
     try {
-      return this.successResponse(categories, true);
+      const CategoryService = req.getService(TYPES.CategoryService);
+      const categories = await CategoryService.category.get();
+      return res.sendSuccess(categories);
     } catch (e) {
-      return this.errorResponse(e);
+      next(e)
     }
   }
 }
+
+export default new CategoryController()

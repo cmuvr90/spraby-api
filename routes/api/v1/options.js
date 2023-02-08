@@ -1,10 +1,9 @@
-import {OptionController} from '../../../controllers/v1/OptionController';
+import OptionController from '../../../controllers/v1/OptionController';
 
 /**
  *
- * @param app
- * @param prefix
+ * @param router
  */
-export default function (app, prefix) {
-  app.get(`${prefix}/options/list`, (req, res) => new OptionController(req, res).index());
+export default function (router) {
+  router.get('/options/list', OptionController.index);
 }

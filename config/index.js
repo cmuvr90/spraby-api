@@ -12,5 +12,9 @@ module.exports = {
     withTerminal: process.env.LOG_WITH_TERMINAL === 'true',
     withDate: process.env.LOG_WITH_DATE === 'true',
     logFolder: process.env.LOG_FOLDER
+  },
+  session: {
+    jwtAccessSecret: process.env.JWT_ACCESS_SEKRET,
+    jwtRefreshSecret: process.env.JWT_REFRESH_SEKRET
   }
 };

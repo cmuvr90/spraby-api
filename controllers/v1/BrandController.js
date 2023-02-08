@@ -1,20 +1,23 @@
-import {Controller} from '..';
 import {TYPES} from '../../ioc/types';
 
-export class BrandController extends Controller {
+class BrandController {
 
   /**
    *
-   * @returns {Promise<*>}
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<void>}
    */
-  index = async () => {
-    const BrandService = this.getService(TYPES.BrandService);
-    const brands = await BrandService.brand.get();
-
+  index = async (req, res, next) => {
     try {
-      return this.successResponse(brands, true);
+      const BrandService = req.getService(TYPES.BrandService);
+      const brands = await BrandService.brand.get();
+      return res.sendSuccess(brands);
     } catch (e) {
-      return this.errorResponse(e);
+      next(e)
     }
   }
 }
+
+export default new BrandController()

@@ -1,20 +1,23 @@
-import {Controller} from '..';
 import {TYPES} from '../../ioc/types';
 
-export class OptionController extends Controller {
+class OptionController {
 
   /**
    *
+   * @param req
+   * @param res
+   * @param next
    * @returns {Promise<*>}
    */
-  index = async () => {
-    const OptionService = this.getService(TYPES.OptionService);
-    const options = await OptionService.option.get();
-
+  index = async (req, res, next) => {
     try {
-      return this.successResponse(options, true);
+      const OptionService = req.getService(TYPES.OptionService);
+      const options = await OptionService.option.get();
+      return res.sendSuccess(options);
     } catch (e) {
-      return this.errorResponse(e);
+      next(e)
     }
   }
 }
+
+export default new OptionController()

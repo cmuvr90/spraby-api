@@ -1,10 +1,9 @@
-import {CategoryController} from '../../../controllers/v1/CategoryController';
+import CategoryController from '../../../controllers/v1/CategoryController';
 
 /**
  *
- * @param app
- * @param prefix
+ * @param router
  */
-export default function (app, prefix) {
-  app.get(`${prefix}/categories/list`, (req, res) => new CategoryController(req, res).index());
+export default function (router) {
+  router.get('/categories/list', CategoryController.index);
 }
