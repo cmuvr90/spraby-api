@@ -36,6 +36,25 @@ class UserController {
       next(e);
     }
   }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  register = async (req, res, next) => {
+    try {
+      const UserService = req.getService(TYPES.UserService);
+      const {email, password} = req.body;
+      const data = await UserService.register(email, password);
+      res.cookie('sprt', data.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      return res.sendSuccess(data);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export default new UserController()

@@ -19,6 +19,6 @@ export default class MainError extends Error {
    * @param errors
    */
   static badRequestError(errors = []) {
-    throw new this(400, 'Bad request' + `[${this.prototype.fileName}]`, Array.isArray(errors) ? errors : [errors]);
+    throw new this(400, 'Bad request', Array.isArray(errors) ? errors : [errors]);
   }
 }

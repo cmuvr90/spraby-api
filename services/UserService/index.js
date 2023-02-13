@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 import LoginError from '../ErrorService/LoginError';
+import RegisterError from '../ErrorService/RegisterError';
 
 export default class UserService {
 
@@ -29,9 +31,7 @@ export default class UserService {
     };
   }
 
-  async login(email = null, password = null) {
-    if (!email || !password) LoginError.badRequestError('Email and password are required');
-
+  async login(email, password) {
     const user = await this.user.findOne({email});
     if (!user) LoginError.badRequestError('Email or password is invalid');
 
@@ -40,6 +40,28 @@ export default class UserService {
 
     const tokens = this.getUserJWTokens(user);
     return {...tokens, user: this.getUserDto(user)}
+  }
+
+  /**
+   *
+   * @param email
+   * @param password
+   * @returns {Promise<{accessToken: *, user: {role, name: *, id: *, email}, refreshToken: *}>}
+   */
+  async register(email, password) {
+    let user = await this.user.findOne({email});
+    if (user) RegisterError.badRequestError('User with this email is exist');
+
+    const hashPassword = await bcrypt.hash(password, 3);
+    const activationLink = uuidv4();
+
+    user = await this.user.create({email, password: hashPassword, activationLink});
+
+    const userDto = this.getUserDto(user);
+    const tokens = this.sessionService.generateJWTokens({...userDto});
+    await this.sessionService.saveJWToken(user.getId(), tokens.refreshToken);
+
+    return {...tokens, user: userDto}
   }
 
   /**

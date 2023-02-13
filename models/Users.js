@@ -16,6 +16,7 @@ const FIELDS = {
     enum: Object.values(ROLES),
     default: ROLES.MANAGER,
   },
+  activationLink: {type: String, default: null},
   password: {type: String, required: true},
 };
 

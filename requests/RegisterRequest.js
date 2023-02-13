@@ -1,5 +1,5 @@
 import {validationResult, checkSchema} from 'express-validator';
-import LoginError from '../services/ErrorService/LoginError';
+import RegisterError from '../services/ErrorService/RegisterError';
 
 /**
  *
@@ -9,15 +9,12 @@ import LoginError from '../services/ErrorService/LoginError';
  * @returns {Promise<*>}
  * @constructor
  */
-const LoginRequest = async (req, res, next) => {
+const RegisterRequest = async (req, res, next) => {
   try {
     await checkSchema({
       email: {
         exists: {
           errorMessage: 'Email is required',
-        },
-        notEmpty: {
-          errorMessage: 'Email is not empty'
         },
         isEmail: {
           errorMessage: 'Email is not valid'
@@ -27,9 +24,10 @@ const LoginRequest = async (req, res, next) => {
         exists: {
           errorMessage: 'Password is required',
         },
-        notEmpty: {
-          errorMessage: 'Password is not empty'
-        }
+        isLength: {
+          errorMessage: 'Password should be at least 3 and less 15 chars long',
+          options: {min: 3, max: 15},
+        },
       }
     }).run(req);
 
@@ -37,10 +35,11 @@ const LoginRequest = async (req, res, next) => {
 
     if (errors.isEmpty()) return next();
 
-    LoginError.badRequestError(errors.array().map(i => i.msg));
+    RegisterError.badRequestError(errors.array().map(i => i.msg));
 
   } catch (e) {
     return next(e)
   }
 }
-export default LoginRequest
+
+export default RegisterRequest;
