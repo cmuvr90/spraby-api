@@ -22,9 +22,22 @@ export default class SessionService {
    * @returns {{accessToken: (*), refreshToken: (*)}}
    */
   generateJWTokens(payload = {}, params = {}) {
-    const accessToken = jwt.sign(payload, this.jwtAccessSecret, params?.access ?? {expiresIn: '30s'})
+    const accessToken = jwt.sign(payload, this.jwtAccessSecret, params?.access ?? {expiresIn: '1h'})
     const refreshToken = jwt.sign(payload, this.jwtRefreshSecret, params?.refresh ?? {expiresIn: '15d'})
     return {accessToken, refreshToken}
+  }
+
+  /**
+   *
+   * @param token
+   * @returns {null|*}
+   */
+  validateAccessToken(token) {
+    try {
+      return jwt.verify(token, this.jwtAccessSecret)
+    } catch (e) {
+      return null;
+    }
   }
 
   /**
@@ -39,6 +52,6 @@ export default class SessionService {
       session.token = refreshToken;
       return await session.save();
     }
-    return await this.session.create({payloadId});
+    return await this.session.create({payloadId, token: refreshToken});
   }
 }
