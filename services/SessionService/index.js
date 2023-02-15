@@ -69,4 +69,12 @@ export default class SessionService {
     }
     return await this.session.create({payloadId, token: refreshToken});
   }
+
+  /**   *
+   *
+   * @returns {Promise<void>}
+   */
+  async removeByToken(token) {
+    return await this.session.deleteOne({token});
+  }
 }

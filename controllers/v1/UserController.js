@@ -79,12 +79,34 @@ class UserController {
    * @param next
    * @returns {Promise<*>}
    */
+  logout = async (req, res, next) => {
+    try {
+      const UserService = req.getService(TYPES.UserService);
+      const SessionConfig = req.getService(TYPES.SessionConfig);
+
+      const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
+      await UserService.logout(refreshToken);
+      res.clearCookie(SessionConfig.jwtRefreshTokenKey);
+
+      return res.json({});
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
   refresh = async (req, res, next) => {
     try {
       const UserService = req.getService(TYPES.UserService);
       const SessionConfig = req.getService(TYPES.SessionConfig);
 
-      const refreshToken = req.cookies['sp-rt'];
+      const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
       const data = await UserService.refresh(refreshToken);
 
       res.cookie(SessionConfig.jwtRefreshTokenKey, data.refreshToken, {

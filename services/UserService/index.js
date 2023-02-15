@@ -51,6 +51,15 @@ export default class UserService {
 
   /**
    *
+   * @param refreshToken
+   * @returns {Promise<*>}
+   */
+  async logout(refreshToken) {
+      return await this.sessionService.removeByToken(refreshToken)
+  }
+
+  /**
+   *
    * @param email
    * @param password
    * @returns {Promise<{accessToken: *, user: {role, name: *, id: *, email}, refreshToken: *}>}
