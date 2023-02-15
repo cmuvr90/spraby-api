@@ -1,4 +1,5 @@
 import {TYPES} from '../../ioc/types';
+import {getTime} from '../../services/utilites';
 
 class UserController {
 
@@ -29,11 +30,15 @@ class UserController {
   register = async (req, res, next) => {
     try {
       const UserService = req.getService(TYPES.UserService);
+      const SessionConfig = req.getService(TYPES.SessionConfig);
 
       const {email, password} = req.body;
       const {accessToken, refreshToken, user} = await UserService.register(email, password);
 
-      res.cookie('sp-rt', refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
+        maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
+        httpOnly: true
+      })
 
       return res.sendSuccess({accessToken, user});
     } catch (e) {
@@ -51,10 +56,15 @@ class UserController {
   login = async (req, res, next) => {
     try {
       const UserService = req.getService(TYPES.UserService);
+      const SessionConfig = req.getService(TYPES.SessionConfig);
+
       const {email, password} = req.body;
       const {accessToken, refreshToken, user} = await UserService.login(email, password);
 
-      res.cookie('sp-rt', refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
+        maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
+        httpOnly: true
+      })
 
       return res.sendSuccess({accessToken, user});
     } catch (e) {
@@ -72,11 +82,15 @@ class UserController {
   refresh = async (req, res, next) => {
     try {
       const UserService = req.getService(TYPES.UserService);
+      const SessionConfig = req.getService(TYPES.SessionConfig);
 
       const refreshToken = req.cookies['sp-rt'];
       const data = await UserService.refresh(refreshToken);
 
-      res.cookie('sp-rt', data.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      res.cookie(SessionConfig.jwtRefreshTokenKey, data.refreshToken, {
+        maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
+        httpOnly: true
+      })
 
       return res.sendSuccess(data);
     } catch (e) {

@@ -15,6 +15,10 @@ module.exports = {
   },
   session: {
     jwtAccessSecret: process.env.JWT_ACCESS_SEKRET,
-    jwtRefreshSecret: process.env.JWT_REFRESH_SEKRET
+    jwtAccessTokenKey: process.env.JWT_ACCESS_TOKEN_KEY,
+    jwtAccessTokenMax: process.env.JWT_ACCESS_TOKEN_MAX,
+    jwtRefreshSecret: process.env.JWT_REFRESH_SEKRET,
+    jwtRefreshTokenKey: process.env.JWT_REFRESH_TOKEN_KEY,
+    jwtRefreshTokenMax: process.env.JWT_REFRESH_TOKEN_MAX,
   }
 };

@@ -11,7 +11,9 @@ export default class SessionService {
   constructor(Session, config, LogService) {
     this.session = Session;
     this.jwtAccessSecret = config.jwtAccessSecret;
+    this.jwtAccessTokenMax = config.jwtAccessTokenMax;
     this.jwtRefreshSecret = config.jwtRefreshSecret;
+    this.jwtRefreshTokenMax = config.jwtRefreshTokenMax;
     this.log = LogService.createLogger('session_service');
   }
 
@@ -22,8 +24,8 @@ export default class SessionService {
    * @returns {{accessToken: (*), refreshToken: (*)}}
    */
   generateJWTokens(payload = {}, params = {}) {
-    const accessToken = jwt.sign(payload, this.jwtAccessSecret, params?.access ?? {expiresIn: '5s'})
-    const refreshToken = jwt.sign(payload, this.jwtRefreshSecret, params?.refresh ?? {expiresIn: '30d'})
+    const accessToken = jwt.sign(payload, this.jwtAccessSecret, params?.access ?? {expiresIn: this.jwtAccessTokenMax})
+    const refreshToken = jwt.sign(payload, this.jwtRefreshSecret, params?.refresh ?? {expiresIn: this.jwtRefreshTokenMax})
     return {accessToken, refreshToken}
   }
 
