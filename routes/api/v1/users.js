@@ -10,4 +10,5 @@ export default function (router) {
   router.get('/users/list', auth, UserController.index);
   router.post('/users/login', LoginRequest, UserController.login);
   router.post('/users/register', RegisterRequest, UserController.register);
+  router.get('/users/refresh', UserController.refresh);
 }

@@ -26,12 +26,16 @@ class UserController {
    * @param next
    * @returns {Promise<*>}
    */
-  login = async (req, res, next) => {
+  register = async (req, res, next) => {
     try {
       const UserService = req.getService(TYPES.UserService);
+
       const {email, password} = req.body;
-      const data = await UserService.login(email, password);
-      return res.sendSuccess(data);
+      const {accessToken, refreshToken, user} = await UserService.register(email, password);
+
+      res.cookie('sp-rt', refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+
+      return res.sendSuccess({accessToken, user});
     } catch (e) {
       next(e);
     }
@@ -44,12 +48,36 @@ class UserController {
    * @param next
    * @returns {Promise<*>}
    */
-  register = async (req, res, next) => {
+  login = async (req, res, next) => {
     try {
       const UserService = req.getService(TYPES.UserService);
       const {email, password} = req.body;
-      const data = await UserService.register(email, password);
-      res.cookie('sprt', data.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      const {accessToken, refreshToken, user} = await UserService.login(email, password);
+
+      res.cookie('sp-rt', refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+
+      return res.sendSuccess({accessToken, user});
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  refresh = async (req, res, next) => {
+    try {
+      const UserService = req.getService(TYPES.UserService);
+
+      const refreshToken = req.cookies['sp-rt'];
+      const data = await UserService.refresh(refreshToken);
+
+      res.cookie('sp-rt', data.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+
       return res.sendSuccess(data);
     } catch (e) {
       next(e);

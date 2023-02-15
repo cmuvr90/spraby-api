@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import LoginError from '../ErrorService/LoginError';
 import RegisterError from '../ErrorService/RegisterError';
+import AuthError from '../ErrorService/AuthError';
 
 export default class UserService {
 
@@ -31,6 +32,12 @@ export default class UserService {
     };
   }
 
+  /**
+   *
+   * @param email
+   * @param password
+   * @returns {Promise<{readonly [Symbol.toStringTag]: string, finally: {<U>(onFinally?: () => (Promise<U> | U)): Promise<U>, (onfinally?: ((() => void) | undefined | null)): Promise<{tokens: {accessToken: *, refreshToken: *}}>}, then<TResult1={tokens: {accessToken: *, refreshToken: *}}, TResult2=never>(onfulfilled?: (((value: {tokens: {accessToken: *, refreshToken: *}}) => (PromiseLike<TResult1> | TResult1)) | undefined | null), onrejected?: (((reason: any) => (PromiseLike<TResult2> | TResult2)) | undefined | null)): Promise<TResult1 | TResult2>, catch<TResult=never>(onrejected?: (((reason: any) => (PromiseLike<TResult> | TResult)) | undefined | null)): Promise<{tokens: {accessToken: *, refreshToken: *}} | TResult>, user: {role, name: *, id: *, email}}>}
+   */
   async login(email, password) {
     const user = await this.user.findOne({email});
     if (!user) LoginError.badRequestError('Email or password is invalid');
@@ -38,7 +45,7 @@ export default class UserService {
     const isEquals = await this.isEqualsPasswords(password, user.getPassword());
     if (!isEquals) LoginError.badRequestError('Email or password is invalid');
 
-    const tokens = this.getUserJWTokens(user);
+    const tokens = await this.getUserJWTokens(user);
     return {...tokens, user: this.getUserDto(user)}
   }
 
@@ -66,6 +73,28 @@ export default class UserService {
 
   /**
    *
+   * @param refreshToken
+   * @returns {Promise<{accessToken: *, user: {role, name: *, id: *, email}, refreshToken: *}>}
+   */
+  async refresh(refreshToken) {
+    if (!refreshToken) throw AuthError.unauthorizedError();
+
+    const userData = this.sessionService.validateRefreshToken(refreshToken);
+    const tokenFromDB = await this.sessionService.session.findOne({token: refreshToken});
+
+    if (!userData || !tokenFromDB) throw AuthError.unauthorizedError();
+
+    const user = await this.user.findById(userData.id);
+
+    const userDto = this.getUserDto(user);
+    const tokens = this.sessionService.generateJWTokens({...userDto});
+    await this.sessionService.saveJWToken(user.getId(), tokens.refreshToken);
+
+    return {...tokens, user: userDto}
+  }
+
+  /**
+   *
    * @param password
    * @param userPassword
    * @returns {Promise<*>}
@@ -77,11 +106,11 @@ export default class UserService {
   /**
    *
    * @param user
-   * @returns {Promise<{tokens: {accessToken: *, refreshToken: *}}>}
+   * @returns {Promise<{accessToken: *, refreshToken: *}>}
    */
   async getUserJWTokens(user) {
     const tokens = this.sessionService.generateJWTokens(this.getUserDto(user));
     await this.sessionService.saveJWToken(user.getId(), tokens.refreshToken);
-    return {tokens};
+    return {...tokens};
   }
 }

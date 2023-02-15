@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use(cors({
   credentials: true,
-  origin: '*'
+  origin: 'http://localhost:3001'
 }));
 app.use('/public', express.static(path.join(__dirname, 'static')));
 
