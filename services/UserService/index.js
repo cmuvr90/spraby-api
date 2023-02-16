@@ -55,7 +55,7 @@ export default class UserService {
    * @returns {Promise<*>}
    */
   async logout(refreshToken) {
-      return await this.sessionService.removeByToken(refreshToken)
+    return await this.sessionService.removeByToken(refreshToken)
   }
 
   /**
@@ -100,6 +100,24 @@ export default class UserService {
     await this.sessionService.saveJWToken(user.getId(), tokens.refreshToken);
 
     return {...tokens, user: userDto}
+  }
+
+  /**
+   *
+   * @param refreshToken
+   * @returns {Promise<void>}
+   */
+  async getAuthUser(refreshToken) {
+    if (!refreshToken) return null;
+
+    const userData = this.sessionService.validateRefreshToken(refreshToken);
+    const tokenFromDB = await this.sessionService.session.findOne({token: refreshToken});
+
+    if (!userData || !tokenFromDB) return null;
+
+    const user = await this.user.findById(userData.id);
+
+    return user ? this.getUserDto(user) : null
   }
 
   /**

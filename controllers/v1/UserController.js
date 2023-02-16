@@ -1,5 +1,6 @@
 import {TYPES} from '../../ioc/types';
 import {getTime} from '../../services/utilites';
+import AuthError from '../../services/ErrorService/AuthError';
 
 class UserController {
 
@@ -115,6 +116,28 @@ class UserController {
       })
 
       return res.sendSuccess(data);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  getAuthUser = async (req, res, next) => {
+    try {
+      const UserService = req.getService(TYPES.UserService);
+      const SessionConfig = req.getService(TYPES.SessionConfig);
+
+      const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
+      const user = await UserService.getAuthUser(refreshToken);
+      if (!user) AuthError.unauthorizedError();
+
+      return res.sendSuccess({user});
     } catch (e) {
       next(e);
     }
