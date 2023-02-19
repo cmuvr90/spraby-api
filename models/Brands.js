@@ -17,4 +17,96 @@ const FIELDS = {
 
 const Brands = new Model(FIELDS);
 
+/**
+ *
+ * @returns {*}
+ */
+Brands.methods.getId = function () {
+  return `${this._id}`;
+}
+
+/**
+ *
+ * @returns {*}
+ */
+Brands.methods.getUser = function () {
+  return this.user;
+}
+
+/**
+ *
+ * @returns {*}
+ */
+Brands.methods.getImage = function () {
+  return this.image;
+}
+
+/**
+ *
+ * @returns {*}
+ */
+Brands.methods.getName = function () {
+  return this.name;
+}
+
+/**
+ *
+ * @returns {*}
+ */
+Brands.methods.getDescription = function () {
+  return this.description;
+}
+
+/**
+ *
+ * @returns {*}
+ */
+Brands.methods.getCategories = function () {
+  return this.categories;
+}
+
+/**
+ *
+ * @param id
+ * @returns {Promise<*>}
+ */
+Brands.statics.getBrandDtoById = async function (id) {
+  return await this.getBrandDto({_id: mongoose.Types.ObjectId(id)})
+}
+
+/**
+ *
+ * @param params
+ * @returns {*|null}
+ */
+Brands.statics.getBrandDto = async function (params = {}) {
+  const brand = await this.findOne(params).populate([{path: 'categories', populate: 'options'}]);
+  return brand ? this.getDto(brand) : null;
+}
+
+/**
+ *
+ * @param params
+ * @returns {*|null}
+ */
+Brands.statics.getBrandsDto = async function (params = {}) {
+  const brands = await this.find(params).populate([{path: 'categories', populate: 'options'}]);
+  return brands?.map(i => this.getDto(i));
+}
+
+/**
+ *
+ * @param brand
+ * @returns {{name: any, description: *, id: *, categories, user}}
+ */
+Brands.statics.getDto = function (brand) {
+  return {
+    id: brand.getId(),
+    user: brand.getUser(),
+    name: brand.getName(),
+    description: brand.getDescription(),
+    categories: brand.getCategories().map(i => Categories.getDto(i))
+  }
+}
+
 export default mongoose.model('Brands', Brands);
