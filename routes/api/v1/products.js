@@ -7,4 +7,5 @@ import {auth} from '../../../middlewares';
  */
 export default function (router) {
   router.get('/products/list', auth, ProductController.index);
+  router.get('/products/:handle', auth, ProductController.get);
 }
