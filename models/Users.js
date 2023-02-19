@@ -8,7 +8,7 @@ const ROLES = {
 }
 
 const FIELDS = {
-  name: {type: String, default: null},
+  firstName: {type: String, default: null},
   lastName: {type: String, default: null},
   email: {type: String, default: null},
   role: {
@@ -34,8 +34,16 @@ Users.methods.getId = function () {
  *
  * @returns {*}
  */
-Users.methods.getName = function () {
-  return this.name;
+Users.methods.getFirstName = function () {
+  return this.firstName;
+}
+
+/**
+ *
+ * @returns {*}
+ */
+Users.methods.getLastName = function () {
+  return this.lastName;
 }
 
 /**
@@ -60,6 +68,50 @@ Users.methods.getRole = function () {
  */
 Users.methods.getPassword = function () {
   return this.password;
+}
+
+/**
+ *
+ * @param id
+ * @returns {Promise<*>}
+ */
+Users.statics.getUserDtoById = async function (id) {
+  return await this.getUserDto({_id: mongoose.Types.ObjectId(id)})
+}
+
+/**
+ *
+ * @param params
+ * @returns {Promise<*>}
+ */
+Users.statics.getUsersDto = async function (params = {}) {
+  const users = await this.find(params);
+  return users?.map(i => this.getDto(i));
+}
+
+/**
+ *
+ * @param params
+ * @returns {Promise<{firstName, lastName, role, id: *, email}|null>}
+ */
+Users.statics.getUserDto = async function (params = {}) {
+  const user = await this.findOne(params);
+  return user ? this.getDto(user) : null;
+}
+
+/**
+ *
+ * @param user
+ * @returns {{firstName, lastName, role, id: *, email}}
+ */
+Users.statics.getDto = function (user) {
+  return {
+    id: user.getId(),
+    firstName: user.getFirstName(),
+    lastName: user.getLastName(),
+    email: user.getEmail(),
+    role: user.getRole(),
+  }
 }
 
 /**

@@ -14,10 +14,28 @@ class UserController {
   index = async (req, res, next) => {
     try {
       const UserService = req.getService(TYPES.UserService);
-      const users = await UserService.user.find();
+      const users = await UserService.user.getUsersDto();
       return res.sendSuccess(users);
     } catch (e) {
       next(e);
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  get = async (req, res, next) => {
+    try {
+      const id = req?.params?.id;
+      const UserService = req.getService(TYPES.UserService);
+      const user = await UserService.user.getUserDtoById(id);
+      return res.sendSuccess(user);
+    } catch (e) {
+      next(e)
     }
   }
 
