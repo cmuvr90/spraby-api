@@ -7,4 +7,5 @@ import {auth} from '../../../middlewares';
  */
 export default function (router) {
   router.get('/categories/list', auth, CategoryController.index);
+  router.get('/categories/:handle', auth, CategoryController.get);
 }

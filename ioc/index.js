@@ -74,7 +74,7 @@ const container = new Container();
 
 container.bind(TYPES.UserModel).toDynamicValue(() => UserModel);
 container.bind(TYPES.BrandModel).toDynamicValue(() => new ModelService(BrandModel));
-container.bind(TYPES.CategoryModel).toDynamicValue(() => new ModelService(CategoryModel));
+container.bind(TYPES.CategoryModel).toDynamicValue(() => CategoryModel);
 container.bind(TYPES.CollectionModel).toDynamicValue(() => new ModelService(CollectionModel));
 container.bind(TYPES.OptionModel).toDynamicValue(() => new ModelService(OptionModel));
 container.bind(TYPES.ProductModel).toDynamicValue(() => new ModelService(ProductModel));
