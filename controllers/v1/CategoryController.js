@@ -30,8 +30,8 @@ class CategoryController {
     try {
       const handle = req?.params?.handle;
       const CategoryService = req.getService(TYPES.CategoryService);
-      const categories = await CategoryService.category.getCategoryDtoByHandle(handle);
-      return res.sendSuccess(categories);
+      const category = await CategoryService.category.getCategoryDtoByHandle(handle);
+      return res.sendSuccess(category);
     } catch (e) {
       next(e)
     }

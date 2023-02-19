@@ -37,6 +37,14 @@ Categories.methods.getHandle = function () {
  *
  * @returns {*}
  */
+Categories.methods.getName = function () {
+  return this.name;
+}
+
+/**
+ *
+ * @returns {*}
+ */
 Categories.methods.getTitle = function () {
   return this.title;
 }
@@ -106,12 +114,13 @@ Categories.statics.getCategoriesDto = async function (params = {}) {
 /**
  *
  * @param category
- * @returns {{options: *, description, handle, id: *, title}}
+ * @returns {{name: any, options: *, description: *, handle: *, id: *}}
  */
 Categories.statics.getDto = function (category) {
   return {
     id: category.getId(),
     handle: category.getHandle(),
+    name: category.getName(),
     title: category.getTitle(),
     description: category.getDescription(),
     options: category.getOptions(),
