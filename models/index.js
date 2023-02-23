@@ -15,6 +15,7 @@ export default class Model {
     this.model.statics.updateOrCreate = this.updateOrCreate;
     this.model.statics.findPrepare = this.findPrepare;
     this.model.statics.prepareItem = this.prepareItem;
+    this.model.statics.updateById = this.updateById;
 
     return this.model;
   }
@@ -61,5 +62,14 @@ export default class Model {
       createdAt: moment(item.createdAt).format(),
       updatedAt: moment(item.updatedAt).format()
     };
+  }
+
+  /**
+   *
+   * @param id
+   * @param params
+   */
+  updateById = async function (id, params) {
+    return await this.updateOne({_id: mongoose.Types.ObjectId(id)}, params);
   }
 }
