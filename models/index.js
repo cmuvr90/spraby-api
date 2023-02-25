@@ -16,6 +16,7 @@ export default class Model {
     this.model.statics.findPrepare = this.findPrepare;
     this.model.statics.prepareItem = this.prepareItem;
     this.model.statics.updateById = this.updateById;
+    this.model.statics.deleteById = this.deleteById;
 
     return this.model;
   }
@@ -71,5 +72,14 @@ export default class Model {
    */
   updateById = async function (id, params) {
     return await this.updateOne({_id: mongoose.Types.ObjectId(id)}, params);
+  }
+
+  /**
+   *
+   * @param id
+   * @returns {Promise<*>}
+   */
+  deleteById = async function (id) {
+    return await this.deleteOne({_id: mongoose.Types.ObjectId(id)});
   }
 }
