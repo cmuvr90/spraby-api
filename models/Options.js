@@ -83,7 +83,7 @@ Options.methods.getValues = function () {
  * @returns {Promise<*>}
  */
 Options.statics.getOptionDtoById = async function (id) {
-  return await this.getOptionDto({id})
+  return await this.getOptionDto({_id: mongoose.Types.ObjectId(id)})
 }
 
 /**
