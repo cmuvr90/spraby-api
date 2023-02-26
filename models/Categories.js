@@ -114,9 +114,10 @@ Categories.statics.getCategoriesDto = async function (params = {}) {
 /**
  *
  * @param category
- * @returns {{name: any, options: *, description: *, handle: *, id: *}}
+ * @returns {null|{name: *, options: *, description: *, handle: *, id: *, title: *}}
  */
-Categories.statics.getDto = function (category) {
+Categories.statics.getDto = function (category = null) {
+  if (!category) return null;
   return {
     id: category.getId(),
     handle: category.getHandle(),
