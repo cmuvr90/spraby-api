@@ -97,7 +97,7 @@ Categories.statics.getCategoryDtoByHandle = async function (handle) {
  * @returns {*|null}
  */
 Categories.statics.getCategoryDto = async function (params = {}) {
-  const category = await this.findOne(params);
+  const category = await this.findOne(params).populate('options');
   return category ? this.getDto(category) : null;
 }
 
@@ -123,7 +123,7 @@ Categories.statics.getDto = function (category) {
     name: category.getName(),
     title: category.getTitle(),
     description: category.getDescription(),
-    options: category.getOptions(),
+    options: category.getOptions().map(i => Options.getDto(i)),
   }
 }
 
