@@ -152,4 +152,17 @@ Products.statics.createProduct = async function (params) {
   return this.create(data)
 }
 
+/**
+ *
+ * @param productId
+ * @param variantIds
+ * @returns {Promise<*>}
+ */
+Products.statics.addVariants = async function (productId, variantIds) {
+  const product = await this.findById(productId);
+  if (!product) return;
+  product.variants = Array.from(new Set(product.variants.map(i => `${i}`).concat(variantIds.map(i => `${i}`)))).map(i => new mongoose.Types.ObjectId(i))
+  return await product.save();
+}
+
 export default mongoose.model('Products', Products);

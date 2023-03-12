@@ -78,7 +78,7 @@ container.bind(TYPES.CategoryModel).toDynamicValue(() => CategoryModel);
 container.bind(TYPES.CollectionModel).toDynamicValue(() => CollectionModel);
 container.bind(TYPES.OptionModel).toDynamicValue(() => OptionModel);
 container.bind(TYPES.ProductModel).toDynamicValue(() => ProductModel);
-container.bind(TYPES.VariantModel).toDynamicValue(() => new ModelService(VariantModel));
+container.bind(TYPES.VariantModel).toDynamicValue(() => VariantModel);
 container.bind(TYPES.SessionModel).toDynamicValue(() => SessionModel);
 
 container.bind(TYPES.UserService).to(UserService);

@@ -29,10 +29,11 @@ class VariantController {
   create = async (req, res, next) => {
     try {
       const params = req?.body;
+      const VariantService = req.getService(TYPES.VariantService);
       const ProductService = req.getService(TYPES.ProductService);
-      const product = await ProductService.product.createProduct({...params, brand: brand.getId()});
-      const productDto = await ProductService.product.getProductDto(product);
-      return res.sendSuccess(productDto);
+      const variant = await VariantService.variant.createVariant({...params});
+      await ProductService.product.addVariants(params.product, [variant._id])
+      return res.sendSuccess(variant);
     } catch (e) {
       next(e)
     }

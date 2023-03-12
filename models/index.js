@@ -6,10 +6,11 @@ export default class Model {
   /**
    *
    * @param fields
-   * @returns {module:mongoose.Schema<any, Model<any, any, any, any>, {}, {}, {}, {}, DefaultTypeKey, *[]>}
+   * @param options
+   * @returns {module:mongoose.Schema<any, Model<any, any, any, any>, {}, {}, {}, {}, {timestamps: boolean}, *[], HydratedDocument<FlatRecord<*[]>, unknown>>}
    */
-  constructor(fields = []) {
-    this.model = new mongoose.Schema(fields, {timestamps: true});
+  constructor(fields = [], options = {timestamps: true}) {
+    this.model = new mongoose.Schema(fields, options);
 
     this.model.statics.FIELDS = fields;
     this.model.statics.updateOrCreate = this.updateOrCreate;
