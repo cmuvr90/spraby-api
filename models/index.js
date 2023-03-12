@@ -17,8 +17,18 @@ export default class Model {
     this.model.statics.prepareItem = this.prepareItem;
     this.model.statics.updateById = this.updateById;
     this.model.statics.deleteById = this.deleteById;
+    this.model.statics.findById = this.findById;
 
     return this.model;
+  }
+
+  /**
+   *
+   * @param id
+   * @returns {Promise<*>}
+   */
+  findById = async function (id) {
+    return this.findOne({_id: new mongoose.Types.ObjectId(id)})
   }
 
   /**
@@ -71,7 +81,7 @@ export default class Model {
    * @param params
    */
   updateById = async function (id, params) {
-    return await this.updateOne({_id: mongoose.Types.ObjectId(id)}, params);
+    return await this.updateOne({_id: new mongoose.Types.ObjectId(id)}, params);
   }
 
   /**
@@ -80,6 +90,6 @@ export default class Model {
    * @returns {Promise<*>}
    */
   deleteById = async function (id) {
-    return await this.deleteOne({_id: mongoose.Types.ObjectId(id)});
+    return await this.deleteOne({_id: new mongoose.Types.ObjectId(id)});
   }
 }

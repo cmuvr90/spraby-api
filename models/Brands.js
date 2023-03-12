@@ -71,7 +71,7 @@ Brands.methods.getCategories = function () {
  * @returns {Promise<*>}
  */
 Brands.statics.getBrandDtoById = async function (id) {
-  return await this.getBrandDto({_id: mongoose.Types.ObjectId(id)})
+  return await this.getBrandDto({_id: new mongoose.Types.ObjectId(id)})
 }
 
 /**

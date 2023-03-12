@@ -18,6 +18,25 @@ class VariantController {
       next(e)
     }
   }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  create = async (req, res, next) => {
+    try {
+      const params = req?.body;
+      const ProductService = req.getService(TYPES.ProductService);
+      const product = await ProductService.product.createProduct({...params, brand: brand.getId()});
+      const productDto = await ProductService.product.getProductDto(product);
+      return res.sendSuccess(productDto);
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default new VariantController()

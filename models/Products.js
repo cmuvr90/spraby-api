@@ -3,12 +3,13 @@ import Model from './index';
 import Brands from './Brands';
 import Categories from './Categories';
 import Variants from './Variants';
+import {getHandle} from '../services/utilites';
 
 const FIELDS = {
   brand: {type: mongoose.Schema.Types.ObjectId, ref: Brands},
   category: {type: mongoose.Schema.Types.ObjectId, ref: Categories},
   title: {type: String, required: true},
-  handle: {type: String, required: true},
+  handle: {type: String, required: true, unique: true},
   description: {type: String, default: null},
   image: {type: String, default: null},
   variants: [
@@ -17,6 +18,11 @@ const FIELDS = {
 };
 
 const Products = new Model(FIELDS);
+
+Products.pre('deleteOne', {document: true, query: true}, async function () {
+  const product = await this.model.findOne(this.getQuery());
+  if (product?.variants) await Variants.deleteMany({id: {$in: product?.variants}})
+});
 
 /**
  *
@@ -74,14 +80,13 @@ Products.methods.getVariants = function () {
   return this.variants;
 }
 
-
 /**
  *
  * @param id
  * @returns {Promise<*>}
  */
 Products.statics.getProductDtoById = async function (id) {
-  return await this.getProductDto({_id: mongoose.Types.ObjectId(id)})
+  return await this.getProductDto({_id: new mongoose.Types.ObjectId(id)})
 }
 
 /**
@@ -128,6 +133,23 @@ Products.statics.getDto = function (product) {
     image: product.getImage(),
     variants: product.getVariants(),
   }
+}
+
+/**
+ *
+ * @param params
+ * @returns {Promise<data>}
+ */
+Products.statics.createProduct = async function (params) {
+  const data = {
+    handle: getHandle(params.title),
+    title: params.title,
+    brand: params.brand,
+    description: params.description,
+    category: params.category,
+    image: params.image,
+  }
+  return this.create(data)
 }
 
 export default mongoose.model('Products', Products);

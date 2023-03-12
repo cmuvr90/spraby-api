@@ -80,7 +80,7 @@ Collections.methods.getCategories = function () {
  * @returns {Promise<*>}
  */
 Collections.statics.getCollectionDtoById = async function (id) {
-  return await this.getCollectionDto({_id: mongoose.Types.ObjectId(id)})
+  return await this.getCollectionDto({_id: new mongoose.Types.ObjectId(id)})
 }
 
 /**

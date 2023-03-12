@@ -76,7 +76,7 @@ Users.methods.getPassword = function () {
  * @returns {Promise<*>}
  */
 Users.statics.getUserDtoById = async function (id) {
-  return await this.getUserDto({_id: mongoose.Types.ObjectId(id)})
+  return await this.getUserDto({_id: new mongoose.Types.ObjectId(id)})
 }
 
 /**

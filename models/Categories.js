@@ -79,7 +79,7 @@ Categories.methods.getOptions = function () {
  * @returns {Promise<*>}
  */
 Categories.statics.getCategoryDtoById = async function (id) {
-  return await this.getCategoryDto({_id: mongoose.Types.ObjectId(id)})
+  return await this.getCategoryDto({_id: new mongoose.Types.ObjectId(id)})
 }
 
 /**

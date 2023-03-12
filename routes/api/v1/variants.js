@@ -7,4 +7,5 @@ import {auth} from '../../../middlewares';
  */
 export default function (router) {
   router.get('/variants/list', auth, VariantController.index);
+  router.post('/variants/save', auth, VariantController.create);
 }

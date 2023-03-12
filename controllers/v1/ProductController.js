@@ -50,7 +50,7 @@ class ProductController {
       const params = req?.body;
       const brand = await req.getService(TYPES.BrandService).brand.findOne(); //@todo fix
       const ProductService = req.getService(TYPES.ProductService);
-      const product = await ProductService.product.create({...params, brand: brand.getId(), handle: getHandle(params.title)});
+      const product = await ProductService.product.createProduct({...params, brand: brand.getId()});
       const productDto = await ProductService.product.getProductDto(product);
       return res.sendSuccess(productDto);
     } catch (e) {
