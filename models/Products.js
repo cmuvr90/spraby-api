@@ -19,9 +19,12 @@ const FIELDS = {
 
 const Products = new Model(FIELDS);
 
+/**
+ *
+ */
 Products.pre('deleteOne', {document: true, query: true}, async function () {
   const product = await this.model.findOne(this.getQuery());
-  if (product?.variants) await Variants.deleteMany({id: {$in: product?.variants}})
+  if (product?.variants) await Variants.deleteMany({_id: {$in: product.variants}})
 });
 
 /**
