@@ -14,10 +14,43 @@ const FIELDS = {
   product: {type: mongoose.Schema.Types.ObjectId, ref: 'Products'},
   image: {type: String, default: null},
   title: {type: String, default: null},
+  //create options array
   values: [Values]
 };
 
 const Variants = new Model(FIELDS);
+
+/**
+ *
+ * @returns {*}
+ */
+Variants.methods.getId = function () {
+  return `${this._id}`;
+}
+
+/**
+ *
+ * @returns {*}
+ */
+Variants.methods.getTitle = function () {
+  return this.title;
+}
+
+/**
+ *
+ * @param variant
+ * @returns {{values, id: *, title: *}}
+ */
+Variants.statics.getDto = function (variant) {
+  return {
+    id: variant.getId(),
+    title: variant.getTitle(),
+    values: variant.values.map(i => ({
+      ...i,
+      option: Options.getDto(i.option)
+    })),
+  }
+}
 
 /**
  *

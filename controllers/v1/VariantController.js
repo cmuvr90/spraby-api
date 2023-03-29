@@ -38,6 +38,17 @@ class VariantController {
       next(e)
     }
   }
+
+  delete = async (req, res, next) => {
+    try {
+      const id = req?.params?.id;
+      const VariantService = req.getService(TYPES.VariantService);
+      await VariantService.variant.deleteById(id);
+      return res.sendSuccess({});
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default new VariantController()

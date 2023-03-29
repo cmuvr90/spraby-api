@@ -21,28 +21,31 @@ const Products = new Model(FIELDS);
 
 //VALIDATIONS
 Products.path('handle').validate(async function (value) {
-  try {
-    let handle = value;
-    const DELIMITER = '_';
+  // try {
+  //   let handle = value;
+  //   const DELIMITER = '_';
+  //
+  //   const product = await mongoose.model('Products')
+  //   .findOne({$or: [{handle: new RegExp(`^(${value})(${DELIMITER}\\d*)$`, 'i')}, {handle: value}]})
+  //   .sort({createdAt: -1})
+  //   .select({handle: 1});
+  //
+  //   if (product?.handle?.length) {
+  //     const matched = product?.handle.match(new RegExp(`(${DELIMITER}\\d*)$`));
+  //     if (matched && matched[0]?.length && Number.isInteger(+matched[0].replace('_', ''))) {
+  //       handle = handle + DELIMITER + (+matched[0].replace('_', '') + 1);
+  //     } else {
+  //       handle = `${handle}_1`;
+  //     }
+  //   }
+  //   this.handle = handle;
+  //   return true;
+  // } catch (e) {
+  //   return false
+  // }
+  // return false
 
-    const product = await mongoose.model('Products')
-    .findOne({$or: [{handle: new RegExp(`^(${value})(${DELIMITER}\\d*)$`, 'i')}, {handle: value}]})
-    .sort({createdAt: -1})
-    .select({handle: 1});
-
-    if (product?.handle?.length) {
-      const matched = product?.handle.match(new RegExp(`(${DELIMITER}\\d*)$`));
-      if (matched && matched[0]?.length && Number.isInteger(+matched[0].replace('_', ''))) {
-        handle = handle + DELIMITER + (+matched[0].replace('_', '') + 1);
-      } else {
-        handle = `${handle}_1`;
-      }
-    }
-    this.handle = handle;
-    return true;
-  } catch (e) {
-    return false
-  }
+  this.handle = value;
 }, 'Handle has been unique');
 
 //HOOKS
@@ -165,7 +168,7 @@ Products.statics.getDto = function (product) {
     description: product.getDescription(),
     category: Categories.getDto(product.getCategory()),
     image: product.getImage(),
-    variants: product.getVariants(),
+    variants: product.getVariants().map(v => Variants.getDto(v)),
   }
 }
 
