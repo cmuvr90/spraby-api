@@ -6,10 +6,10 @@ import Variants from './Variants';
 import {getHandle} from '../services/utilites';
 
 const FIELDS = {
-  brand: {type: mongoose.Schema.Types.ObjectId, ref: Brands, required: 'Brand is required',},
-  category: {type: mongoose.Schema.Types.ObjectId, ref: Categories, required: 'Category is required'},
+  brand: {type: mongoose.Schema.Types.ObjectId, ref: Brands, default: null},
+  category: {type: mongoose.Schema.Types.ObjectId, ref: Categories, default: null},
   title: {type: String, required: 'Title is required'},
-  handle: {type: String, required: 'Handle is required'},
+  handle: {type: String, required: 'Handle is required', unique: true},
   description: {type: String, default: null},
   image: {type: String, default: null},
   variants: [
@@ -20,33 +20,33 @@ const FIELDS = {
 const Products = new Model(FIELDS);
 
 //VALIDATIONS
-Products.path('handle').validate(async function (value) {
-  // try {
-  //   let handle = value;
-  //   const DELIMITER = '_';
-  //
-  //   const product = await mongoose.model('Products')
-  //   .findOne({$or: [{handle: new RegExp(`^(${value})(${DELIMITER}\\d*)$`, 'i')}, {handle: value}]})
-  //   .sort({createdAt: -1})
-  //   .select({handle: 1});
-  //
-  //   if (product?.handle?.length) {
-  //     const matched = product?.handle.match(new RegExp(`(${DELIMITER}\\d*)$`));
-  //     if (matched && matched[0]?.length && Number.isInteger(+matched[0].replace('_', ''))) {
-  //       handle = handle + DELIMITER + (+matched[0].replace('_', '') + 1);
-  //     } else {
-  //       handle = `${handle}_1`;
-  //     }
-  //   }
-  //   this.handle = handle;
-  //   return true;
-  // } catch (e) {
-  //   return false
-  // }
-  // return false
-
-  this.handle = value;
-}, 'Handle has been unique');
+// Products.path('handle').validate(async function (value) {
+//   // try {
+//   //   let handle = value;
+//   //   const DELIMITER = '_';
+//   //
+//   //   const product = await mongoose.model('Products')
+//   //   .findOne({$or: [{handle: new RegExp(`^(${value})(${DELIMITER}\\d*)$`, 'i')}, {handle: value}]})
+//   //   .sort({createdAt: -1})
+//   //   .select({handle: 1});
+//   //
+//   //   if (product?.handle?.length) {
+//   //     const matched = product?.handle.match(new RegExp(`(${DELIMITER}\\d*)$`));
+//   //     if (matched && matched[0]?.length && Number.isInteger(+matched[0].replace('_', ''))) {
+//   //       handle = handle + DELIMITER + (+matched[0].replace('_', '') + 1);
+//   //     } else {
+//   //       handle = `${handle}_1`;
+//   //     }
+//   //   }
+//   //   this.handle = handle;
+//   //   return true;
+//   // } catch (e) {
+//   //   return false
+//   // }
+//   // return false
+//
+//   this.handle = value;
+// }, 'Handle has been unique');
 
 //HOOKS
 Products.pre('validate', {document: true, query: true}, async function (next) {

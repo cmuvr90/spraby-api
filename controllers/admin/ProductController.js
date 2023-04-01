@@ -29,9 +29,6 @@ class ProductController {
    */
   get = async (req, res, next) => {
     try {
-
-      console.log('req?.params = ', req?.params);
-
       const id = req?.params?.id;
       const ProductService = req.getService(TYPES.ProductService);
       const product = await ProductService.product.getProductDtoById(id);
