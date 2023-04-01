@@ -4,7 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import {connectToMongo} from './database';
 import config from './config';
-import {apiRouterV1, router} from './routes';
+import {apiRouterV1, apiAdmin, router} from './routes';
 import container from './ioc';
 import {error, init} from './middlewares';
 
@@ -28,6 +28,7 @@ router.get('/', (req, res, next) => {
 app.use(init(app));
 app.use('/', router);
 app.use('/api/v1', apiRouterV1);
+app.use('/api/admin', apiAdmin);
 app.use(error);
 
 (async function start() {
