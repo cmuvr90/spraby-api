@@ -6,19 +6,30 @@ import Products from './Products';
 const VALUE_FIELDS = {
   option: {type: mongoose.Schema.Types.ObjectId, ref: Options},
   value: {type: String, required: true},
-  position: {type: Number, required: true}
+  title: {type: String, required: true},
+  name: {type: String, required: true},
 }
-const Values = new Model(VALUE_FIELDS, {timestamps: false});
+const Values = new Model(VALUE_FIELDS, {
+  timestamps: false,
+  toObject: { virtuals: true },
+  toJSON: { virtuals: true }
+});
 
 const FIELDS = {
   product: {type: mongoose.Schema.Types.ObjectId, ref: 'Products'},
   image: {type: String, default: null},
   title: {type: String, default: null},
-  //create options array
   values: [Values]
 };
 
 const Variants = new Model(FIELDS);
+
+/**
+ *
+ */
+Variants.virtual('id').get(function () {
+  return this.getId();
+});
 
 /**
  *
@@ -45,10 +56,7 @@ Variants.statics.getDto = function (variant) {
   return {
     id: variant.getId(),
     title: variant.getTitle(),
-    values: variant.values.map(i => ({
-      ...i,
-      option: Options.getDto(i.option)
-    })),
+    values: variant.values,
   }
 }
 

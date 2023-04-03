@@ -70,7 +70,15 @@ class ProductController {
       const id = req?.params?.id;
       const params = req?.body;
       const ProductService = req.getService(TYPES.ProductService);
+      const VariantService = req.getService(TYPES.VariantService);
+
+      const variants = params.variants.map(i => ({...i}))
+      delete params.variants;
+
       await ProductService.product.updateById(id, params);
+      await VariantService.saveVariants(id, variants);
+      await ProductService.product.updateVariantsIds(id);
+
       const productDto = await ProductService.product.getProductDtoById(id);
       return res.sendSuccess(productDto);
     } catch (e) {

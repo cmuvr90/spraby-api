@@ -201,4 +201,12 @@ Products.statics.addVariants = async function (productId, variantIds) {
   return await product.save();
 }
 
+/**
+ *
+ */
+Products.statics.updateVariantsIds = async function (productId) {
+  const variants = await Variants.find({product: new mongoose.Types.ObjectId(productId)});
+  return await this.updateById(productId, {variants: variants.map(i => i._id)})
+}
+
 export default mongoose.model('Products', Products);
