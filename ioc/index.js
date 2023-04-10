@@ -10,7 +10,7 @@ import OptionModel from '../models/Options';
 import ProductModel from '../models/Products';
 import VariantModel from '../models/Variants';
 import SessionModel from '../models/Sessions';
-
+import ImageModel from '../models/Images';
 
 import LogService from '../services/LogService';
 import UserService from '../services/UserService';
@@ -20,8 +20,8 @@ import CollectionService from '../services/CollectionService';
 import OptionService from '../services/OptionService';
 import ProductService from '../services/ProductService';
 import VariantService from '../services/VariantService';
-import ModelService from '../services/ModelService';
 import SessionService from '../services/SessionService';
+import ImageService from '../services/ImageService';
 
 //UserService
 decorate(inject(TYPES.UserModel), UserService, 0);
@@ -65,6 +65,11 @@ decorate(inject(TYPES.SessionConfig), SessionService, 1);
 decorate(inject(TYPES.LogService), SessionService, 2);
 decorate(injectable(), SessionService);
 
+//ImageService
+decorate(inject(TYPES.ImageModel), ImageService, 0);
+decorate(inject(TYPES.LogService), ImageService, 1);
+decorate(injectable(), ImageService);
+
 //LogService
 decorate(inject(TYPES.LogConfig), LogService, 0);
 decorate(injectable(), LogService);
@@ -80,6 +85,7 @@ container.bind(TYPES.OptionModel).toDynamicValue(() => OptionModel);
 container.bind(TYPES.ProductModel).toDynamicValue(() => ProductModel);
 container.bind(TYPES.VariantModel).toDynamicValue(() => VariantModel);
 container.bind(TYPES.SessionModel).toDynamicValue(() => SessionModel);
+container.bind(TYPES.ImageModel).toDynamicValue(() => ImageModel);
 
 container.bind(TYPES.UserService).to(UserService);
 container.bind(TYPES.BrandService).to(BrandService);
@@ -90,6 +96,7 @@ container.bind(TYPES.ProductService).to(ProductService);
 container.bind(TYPES.VariantService).to(VariantService);
 container.bind(TYPES.LogService).to(LogService);
 container.bind(TYPES.SessionService).to(SessionService);
+container.bind(TYPES.ImageService).to(ImageService);
 
 container.bind(TYPES.LogConfig).toDynamicValue(() => (config.log));
 container.bind(TYPES.SessionConfig).toDynamicValue(() => (config.session));

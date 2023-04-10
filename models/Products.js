@@ -3,6 +3,7 @@ import Model from './index';
 import Brands from './Brands';
 import Categories from './Categories';
 import Variants from './Variants';
+import Images from './Images';
 import {getHandle} from '../services/utilites';
 
 const FIELDS = {
@@ -11,7 +12,9 @@ const FIELDS = {
   title: {type: String, required: 'Title is required'},
   handle: {type: String, required: 'Handle is required', unique: true},
   description: {type: String, default: null},
-  image: {type: String, default: null},
+  images: [
+    {type: mongoose.Schema.Types.ObjectId, ref: Images}
+  ],
   variants: [
     {type: mongoose.Schema.Types.ObjectId, ref: Variants}
   ]
@@ -105,8 +108,8 @@ Products.methods.getDescription = function () {
  *
  * @returns {*}
  */
-Products.methods.getImage = function () {
-  return this.image;
+Products.methods.getImages = function () {
+  return this.images;
 }
 
 /**
@@ -141,7 +144,10 @@ Products.statics.getProductDtoByHandle = async function (handle) {
  * @returns {*|null}
  */
 Products.statics.getProductDto = async function (params = {}) {
-  const product = await this.findOne(params).populate([{path: 'category', populate: 'options'}, {path: 'variants'}]);
+  const product = await this.findOne(params).populate([{
+    path: 'category',
+    populate: 'options'
+  }, {path: 'variants'}, {path: 'images'}]);
   return product ? this.getDto(product) : null;
 }
 
@@ -151,14 +157,17 @@ Products.statics.getProductDto = async function (params = {}) {
  * @returns {*|null}
  */
 Products.statics.getProductsDto = async function (params = {}) {
-  const products = await this.find(params).populate([{path: 'category', populate: 'options'}, {path: 'variants'}]);
+  const products = await this.find(params).populate([{
+    path: 'category',
+    populate: 'options'
+  }, {path: 'variants'}, {path: 'images'}]);
   return products?.map(i => this.getDto(i));
 }
 
 /**
  *
  * @param product
- * @returns {{image: *, description: *, handle: *, id: *, variants, title: *, category: *}}
+ * @returns {{images, description: *, handle: *, id: *, variants, title: *, category: *}}
  */
 Products.statics.getDto = function (product) {
   return {
@@ -167,7 +176,7 @@ Products.statics.getDto = function (product) {
     title: product.getTitle(),
     description: product.getDescription(),
     category: Categories.getDto(product.getCategory()),
-    image: product.getImage(),
+    images: product.getImages().map(i => Images.getDto(i)),
     variants: product.getVariants().map(v => Variants.getDto(v)),
   }
 }
@@ -183,7 +192,6 @@ Products.statics.createProduct = async function (params) {
     brand: params.brand,
     description: params.description,
     category: params.category,
-    image: params.image,
   }
   return this.create(data)
 }

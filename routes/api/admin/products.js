@@ -10,5 +10,6 @@ export default function (router) {
   router.get('/products/list', auth, ProductController.index);
   router.get('/products/:id', auth, ProductController.get);
   router.put('/products/:id/update', auth, ProductController.update);
+  router.put('/products/:id/images/upload', auth, ProductController.uploadImages);
   router.delete('/products/:id', auth, ProductController.delete);
 }

@@ -103,6 +103,26 @@ class ProductController {
       next(e)
     }
   }
+
+  uploadImages = async (req, res, next) => {
+    try {
+      const id = req?.params?.id;
+      const ProductService = req.getService(TYPES.ProductService);
+      const ImageService = req.getService(TYPES.ImageService);
+
+      console.log('req?.body = ', req?.body);
+      console.log('id = ', id);
+      const imagesSrc = await ImageService.uploadImages(Object.values(req?.files));
+      const ids = await ImageService.saveImages(imagesSrc.map(i => ({src: i})));
+      await ProductService.product.updateById(id, {images: ids})
+
+      console.log('ids = ', ids);
+
+      return res.sendSuccess({});
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default new ProductController()

@@ -1,15 +1,16 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import path from 'path';
 import {connectToMongo} from './database';
 import config from './config';
 import {apiRouterV1, apiAdmin, router} from './routes';
 import container from './ioc';
 import {error, init} from './middlewares';
+import fileUpload from 'express-fileupload';
 
 const app = express();
 
+app.use(fileUpload());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
@@ -17,7 +18,9 @@ app.use(cors({
   credentials: true,
   origin: 'http://localhost:3001'
 }));
-app.use('/public', express.static(path.join(__dirname, 'static')));
+
+app.use(express.static('public'))
+app.use(express.static('files'))
 
 app.set('ioc', container);
 
