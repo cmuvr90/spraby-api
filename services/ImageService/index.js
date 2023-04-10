@@ -1,64 +1,70 @@
-import * as fs from 'fs';
-
 export default class ImageService {
 
   /**
    *
    * @param Image
+   * @param FileService
    * @param LogService
    */
-  constructor(Image, LogService) {
+  constructor(Image, FileService, LogService) {
     this.image = Image;
+    this.FileService = FileService;
     this.log = LogService.createLogger('ImageService');
+    this.folder = 'images/';
+    this.rootFolder = 'public/'
   }
 
-  saveImages = async imagesData => {
-    const imageIds = [];
+  /**
+   *
+   * @param imagesSrc
+   * @returns {Promise<{success: [], failed: []}>}
+   */
+  removeImagesBySrc = async imagesSrc => {
+    const paths = imagesSrc.map(src => {
+      const pathToFile = src.split(this.folder).pop();
+      return this.rootFolder + this.folder + pathToFile;
+    });
 
-    for (const imageData of imagesData) {
-      const image = await this.image.updateOrCreate({src: imageData.src}, imageData)
-      imageIds.push(image.getId());
-    }
-
-    return imageIds;
+    return await this.FileService.removeFilesByPath(paths);
   }
 
   /**
    *
    * @param images
+   * @param path
    * @returns {Promise<[]>}
    */
-  uploadImages = async images => {
-    console.log('images = ', images);
+  saveImages = async (images, path = '') => {
+    const imageIds = [];
 
-    const imageSrc = [];
+    const {success} = await this.uploadImages(images, path);
 
-    for (const image of images) {
-      try {
-        const src = await this.uploadImage('public/images/' + image.name, image.data);
-        imageSrc.push('images/' + image.name);
-      } catch (e) {
-
+    if (success?.length) {
+      for (const item of success) {
+        const image = await this.image.updateOrCreate({src: item.src}, {src: item.src})
+        imageIds.push(image.getId());
       }
     }
 
-    console.log('imageSrc = ', imageSrc);
+    return imageIds;
+  };
 
-    return imageSrc;
-  }
-
-
-  uploadImage = async (name, buffer) => {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(name, buffer, 'binary', (err) => {
-        if (!err) {
-          resolve(name);
-        } else {
-          reject(err?.message ?? 'Error upload image')
-        }
-      });
+  /**
+   *
+   * @param imageFiles
+   * @param path
+   * @returns {Promise<{success: *[], failed: *[]}>}
+   */
+  uploadImages = async (imageFiles, path = '') => {
+    const imagesData = imageFiles.map(imageFile => {
+      const src = this.folder + path + imageFile.name;
+      return {
+        path: this.rootFolder + src,
+        buffer: imageFile.data,
+        src: src
+      }
     });
+
+    return this.FileService.uploadFilesFromBuffer(imagesData);
   }
-
-
 }

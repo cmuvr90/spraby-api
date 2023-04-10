@@ -19,6 +19,7 @@ export const TYPES = {
   SessionService: 'SessionService',
   ImageService: 'ImageService',
   LogService: 'LogService',
+  FileService: 'FileService',
 
   LogConfig: 'LogConfig',
   SessionConfig: 'SessionConfig'

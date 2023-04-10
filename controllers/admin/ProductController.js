@@ -97,27 +97,35 @@ class ProductController {
     try {
       const id = req?.params?.id;
       const ProductService = req.getService(TYPES.ProductService);
+      const ImageService = req.getService(TYPES.ImageService);
+      const product = await ProductService.product.getProductDtoById(id);
+      const imagesSrc = (product?.images ?? []).map(i => i.src);
+
       await ProductService.product.deleteById(id);
+      await ImageService.removeImagesBySrc(imagesSrc);
+
       return res.sendSuccess({});
     } catch (e) {
       next(e)
     }
   }
 
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
   uploadImages = async (req, res, next) => {
     try {
       const id = req?.params?.id;
       const ProductService = req.getService(TYPES.ProductService);
       const ImageService = req.getService(TYPES.ImageService);
+      const ids = await ImageService.saveImages(Object.values(req?.files));
+      const product = await ProductService.product.findById(id);
 
-      console.log('req?.body = ', req?.body);
-      console.log('id = ', id);
-      const imagesSrc = await ImageService.uploadImages(Object.values(req?.files));
-      const ids = await ImageService.saveImages(imagesSrc.map(i => ({src: i})));
-      await ProductService.product.updateById(id, {images: ids})
-
-      console.log('ids = ', ids);
-
+      if (product) await ProductService.product.updateById(id, {images: [...product.getImages(), ...ids]})
       return res.sendSuccess({});
     } catch (e) {
       next(e)

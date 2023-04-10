@@ -22,6 +22,7 @@ import ProductService from '../services/ProductService';
 import VariantService from '../services/VariantService';
 import SessionService from '../services/SessionService';
 import ImageService from '../services/ImageService';
+import FileService from '../services/FileService';
 
 //UserService
 decorate(inject(TYPES.UserModel), UserService, 0);
@@ -67,8 +68,13 @@ decorate(injectable(), SessionService);
 
 //ImageService
 decorate(inject(TYPES.ImageModel), ImageService, 0);
-decorate(inject(TYPES.LogService), ImageService, 1);
+decorate(inject(TYPES.FileService), ImageService, 1);
+decorate(inject(TYPES.LogService), ImageService, 2);
 decorate(injectable(), ImageService);
+
+//FileService
+decorate(inject(TYPES.LogService), FileService, 0);
+decorate(injectable(), FileService);
 
 //LogService
 decorate(inject(TYPES.LogConfig), LogService, 0);
@@ -97,6 +103,7 @@ container.bind(TYPES.VariantService).to(VariantService);
 container.bind(TYPES.LogService).to(LogService);
 container.bind(TYPES.SessionService).to(SessionService);
 container.bind(TYPES.ImageService).to(ImageService);
+container.bind(TYPES.FileService).to(FileService);
 
 container.bind(TYPES.LogConfig).toDynamicValue(() => (config.log));
 container.bind(TYPES.SessionConfig).toDynamicValue(() => (config.session));
