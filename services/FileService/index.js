@@ -89,4 +89,78 @@ export default class FileService {
       });
     });
   }
+
+  /**
+   *
+   * @param path
+   */
+  createPathDirectories(path) {
+    const pathData = path.split('/');
+    let dir = '';
+    for (const pathItem of pathData) {
+      if (!pathItem.length) continue;
+      dir += pathItem + '/';
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    }
+  }
+
+  /**
+   *
+   * @param path
+   */
+  removePathEmptyDirectories = async path => {
+    const pathData = path.split('/');
+    let dir = [...pathData];
+
+    for (const pathItem of pathData) {
+      const path = dir.join('/');
+      this.removeDirectoryIfEmpty(path);
+      dir.pop();
+    }
+  }
+
+  /**
+   *
+   * @param path
+   * @returns {boolean|void}
+   */
+  removeDirectoryIfEmpty = path => {
+    try {
+      if (this.isEmptyDirectory(path)) return this.removeDirectory(path);
+      return false;
+    } catch (e) {
+      this.log.error(`[FileService][removeDirectoryIfEmpty] Error: ${e?.message || e}`);
+      return false;
+    }
+  }
+
+  /**
+   *
+   * @param path
+   * @returns {boolean|void}
+   */
+  removeDirectory = path => {
+    try {
+      if (fs.existsSync(path)) return fs.rmSync(path, {recursive: true, force: true}) === undefined
+      return false;
+    } catch (e) {
+      this.log.error(`[FileService][removeDirectory] Error: ${e?.message || e}`);
+      return false;
+    }
+  }
+
+  /**
+   *
+   * @param path
+   * @returns {null|boolean}
+   */
+  isEmptyDirectory = path => {
+    try {
+      const data = fs.readdirSync(path)
+      return Array.isArray(data) && !data?.length;
+    } catch (e) {
+      this.log.error(`[FileService][isEmptyDirectory] Error: ${e?.message || e}`)
+      return null;
+    }
+  }
 }
