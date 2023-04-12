@@ -77,6 +77,14 @@ Products.methods.getId = function () {
  *
  * @returns {*}
  */
+Products.methods.getBrand = function () {
+  return this.brand;
+}
+
+/**
+ *
+ * @returns {*}
+ */
 Products.methods.getCategory = function () {
   return this.category;
 }

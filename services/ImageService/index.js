@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default class ImageService {
 
   /**
@@ -27,14 +29,14 @@ export default class ImageService {
 
   /**
    *
-   * @param images
+   * @param files
    * @param path
    * @returns {Promise<{success: *[], ids: [], failed: *[]}>}
    */
-  saveImages = async (images, path = '') => {
+  saveImages = async (files, path = '') => {
     const ids = [];
 
-    const {success, failed} = this.uploadImages(images, path);
+    const {success, failed} = this.uploadImages(files, path);
 
     if (success?.length) {
       for (const src of success) {
@@ -53,8 +55,9 @@ export default class ImageService {
    * @returns {{success: *[], failed: *[]}}
    */
   uploadImages = (imageFiles, path = '') => {
-    const imagesData = imageFiles.map(imageFile => {
-      const src = path + imageFile.name;
+    const imagesData = imageFiles.map((imageFile, index) => {
+      const mime = imageFile.name.split('.').pop();
+      const src = path + 'sp-' + moment().format('YYYYMMDDHHmmssSSS') + index + '.' + mime;
       return {
         path: this.rootPath + src,
         buffer: imageFile.data,

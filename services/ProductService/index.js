@@ -23,7 +23,8 @@ export default class ProductService {
       const product = await this.product.findById(productId);
       if (!product) throw Error(`Product ${productId} not found`);
 
-      const {ids} = await this.ImageService.saveImages(files);
+      const path = `brand/${product.brand}/products/${product.getId()}/`;
+      const {ids} = await this.ImageService.saveImages(files, path);
 
       if (ids?.length) {
         const imageIds = [...product.getImages(), ...ids]

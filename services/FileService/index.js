@@ -44,6 +44,8 @@ export default class FileService {
         if (response?.message) {
           reject(response.message);
         } else {
+          const directoriesPath = path.split('/').slice(0, -1).join('/');
+          this.removePathEmptyDirectories(directoriesPath);
           resolve(true);
         }
       });
@@ -60,6 +62,9 @@ export default class FileService {
     const failed = [];
 
     for (const fileData of filesData) {
+      const directoriesPath = fileData.path.split('/').slice(0, -1).join('/');
+      this.createPathDirectories(directoriesPath);
+
       const response = this.uploadFileFromBuffer(fileData.path, fileData.buffer);
       if (response) {
         success.push(fileData);
