@@ -62,9 +62,9 @@ export default class FileService {
     for (const fileData of filesData) {
       const response = this.uploadFileFromBuffer(fileData.path, fileData.buffer);
       if (response) {
-        success.push(fileData.path);
+        success.push(fileData);
       } else {
-        failed.push(fileData.path);
+        failed.push(fileData);
       }
     }
     return {success, failed};

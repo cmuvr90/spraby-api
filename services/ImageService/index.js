@@ -10,8 +10,9 @@ export default class ImageService {
     this.image = Image;
     this.FileService = FileService;
     this.log = LogService.createLogger('ImageService');
-    this.folder = 'images/';
-    this.rootFolder = 'public/'
+    this.bucket = 'images';
+    this.root = 'public'
+    this.rootPath = `${this.root}/${this.bucket}/`
   }
 
   /**
@@ -20,11 +21,7 @@ export default class ImageService {
    * @returns {Promise<{success: [], failed: []}>}
    */
   removeImagesBySrc = async imagesSrc => {
-    const paths = imagesSrc.map(src => {
-      const pathToFile = src.split(this.folder).pop();
-      return this.rootFolder + this.folder + pathToFile;
-    });
-
+    const paths = imagesSrc.map(i => this.rootPath + i.split(`${this.bucket}/`).pop());
     return await this.FileService.removeFilesByPath(paths);
   }
 
@@ -57,14 +54,18 @@ export default class ImageService {
    */
   uploadImages = (imageFiles, path = '') => {
     const imagesData = imageFiles.map(imageFile => {
-      const src = this.folder + path + imageFile.name;
+      const src = path + imageFile.name;
       return {
-        path: this.rootFolder + src,
+        path: this.rootPath + src,
         buffer: imageFile.data,
-        src: src
+        src: `${this.bucket}/${src}`
       }
     });
 
-    return this.FileService.uploadFilesFromBuffer(imagesData);
+    let {success, failed} = this.FileService.uploadFilesFromBuffer(imagesData);
+
+    success = success.map(i => i.src);
+    failed = failed.map(i => i.src);
+    return {success, failed};
   }
 }
