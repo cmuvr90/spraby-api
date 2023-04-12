@@ -40,6 +40,29 @@ export default class ProductService {
 
   /**
    *
+   * @param productId
+   * @param imageIds
+   * @returns {Promise<boolean>}
+   */
+  removeImages = async (productId, imageIds) => {
+    try {
+      const product = await this.product.findById(productId);
+      if (!product) throw Error(`Product ${productId} not found`);
+
+      await this.ImageService.removeImagesByIds(imageIds);
+
+      const images = product.images.filter(i => !imageIds.includes(`${i}`))
+      await this.product.updateById(productId, {images});
+
+      return true;
+    } catch (e) {
+      this.log.error(`[ProductService][removeImages] Error: ${e?.message || e}`)
+      return false;
+    }
+  }
+
+  /**
+   *
    * @param count
    * @returns {Promise<[]>}
    */

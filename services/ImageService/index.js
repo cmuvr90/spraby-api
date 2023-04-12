@@ -29,6 +29,18 @@ export default class ImageService {
 
   /**
    *
+   * @param imageIds
+   * @returns {Promise<{success: *[], failed: *[]}>}
+   */
+  removeImagesByIds = async imageIds => {
+    const images = await this.image.findByIds(imageIds);
+    const imagesSrc = images.map(i => i.getSrc());
+    if (imagesSrc?.length) await this.removeImagesBySrc(imagesSrc);
+    await this.image.deleteByIds(imageIds);
+  }
+
+  /**
+   *
    * @param files
    * @param path
    * @returns {Promise<{success: *[], ids: [], failed: *[]}>}

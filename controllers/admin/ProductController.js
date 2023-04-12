@@ -129,6 +129,26 @@ class ProductController {
       next(e)
     }
   }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  removeImages = async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const ProductService = req.getService(TYPES.ProductService);
+      const isRemoved = await ProductService.removeImages(id, req?.body.ids);
+
+      const message = isRemoved ? 'Removed success' : 'Removed with errors';
+      return res.sendSuccess({message, error: !isRemoved});
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default new ProductController()
