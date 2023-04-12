@@ -119,14 +119,12 @@ class ProductController {
    */
   uploadImages = async (req, res, next) => {
     try {
-      const id = req?.params?.id;
+      const id = req.params.id;
       const ProductService = req.getService(TYPES.ProductService);
-      const ImageService = req.getService(TYPES.ImageService);
-      const ids = await ImageService.saveImages(Object.values(req?.files));
-      const product = await ProductService.product.findById(id);
+      const isUploaded = await ProductService.uploadAndSaveImages(id, Object.values(req?.files));
 
-      if (product) await ProductService.product.updateById(id, {images: [...product.getImages(), ...ids]})
-      return res.sendSuccess({});
+      const message = isUploaded ? 'Upload success' : 'Uploaded with errors';
+      return res.sendSuccess({message, error: !isUploaded});
     } catch (e) {
       next(e)
     }

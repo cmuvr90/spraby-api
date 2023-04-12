@@ -52,7 +52,8 @@ decorate(injectable(), OptionService);
 
 //ProductService
 decorate(inject(TYPES.ProductModel), ProductService, 0);
-decorate(inject(TYPES.LogService), ProductService, 1);
+decorate(inject(TYPES.ImageService), ProductService, 1);
+decorate(inject(TYPES.LogService), ProductService, 2);
 decorate(injectable(), ProductService);
 
 //VariantService

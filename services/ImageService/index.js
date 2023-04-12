@@ -32,30 +32,30 @@ export default class ImageService {
    *
    * @param images
    * @param path
-   * @returns {Promise<[]>}
+   * @returns {Promise<{success: *[], ids: [], failed: *[]}>}
    */
   saveImages = async (images, path = '') => {
-    const imageIds = [];
+    const ids = [];
 
-    const {success} = await this.uploadImages(images, path);
+    const {success, failed} = this.uploadImages(images, path);
 
     if (success?.length) {
-      for (const item of success) {
-        const image = await this.image.updateOrCreate({src: item.src}, {src: item.src})
-        imageIds.push(image.getId());
+      for (const src of success) {
+        const image = await this.image.updateOrCreate({src: src})
+        ids.push(image.getId());
       }
     }
 
-    return imageIds;
+    return {ids, success, failed};
   };
 
   /**
    *
    * @param imageFiles
    * @param path
-   * @returns {Promise<{success: *[], failed: *[]}>}
+   * @returns {{success: *[], failed: *[]}}
    */
-  uploadImages = async (imageFiles, path = '') => {
+  uploadImages = (imageFiles, path = '') => {
     const imagesData = imageFiles.map(imageFile => {
       const src = this.folder + path + imageFile.name;
       return {

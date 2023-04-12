@@ -3,11 +3,38 @@ export default class ProductService {
   /**
    *
    * @param Product
+   * @param ImageService
    * @param LogService
    */
-  constructor(Product, LogService) {
+  constructor(Product, ImageService, LogService) {
     this.product = Product;
+    this.ImageService = ImageService;
     this.log = LogService.createLogger('ProductService');
+  }
+
+  /**
+   *
+   * @param productId
+   * @param files
+   * @returns {Promise<boolean>}
+   */
+  uploadAndSaveImages = async (productId, files) => {
+    try {
+      const product = await this.product.findById(productId);
+      if (!product) throw Error(`Product ${productId} not found`);
+
+      const {ids} = await this.ImageService.saveImages(files);
+
+      if (ids?.length) {
+        const imageIds = [...product.getImages(), ...ids]
+        await this.product.updateById(productId, {images: imageIds});
+      }
+
+      return files?.length === ids?.length;
+    } catch (e) {
+      this.log.error(`[ProductService][uploadAndSaveImages] Error: ${e?.message || e}`)
+      return false;
+    }
   }
 
   /**

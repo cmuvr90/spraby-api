@@ -53,22 +53,20 @@ export default class FileService {
   /**
    *
    * @param filesData
-   * @returns {Promise<{success: [], failed: []}>}
+   * @returns {{success: [], failed: []}}
    */
-  uploadFilesFromBuffer = async filesData => {
+  uploadFilesFromBuffer = filesData => {
     const success = [];
     const failed = [];
 
     for (const fileData of filesData) {
-      try {
-        await this.uploadFileFromBuffer(fileData.path, fileData.buffer);
-        success.push(fileData);
-      } catch (e) {
-        this.log.error(`[FileService][uploadFilesFromBuffer] Error: ${e?.message || e}`);
-        failed.push(fileData);
+      const response = this.uploadFileFromBuffer(fileData.path, fileData.buffer);
+      if (response) {
+        success.push(fileData.path);
+      } else {
+        failed.push(fileData.path);
       }
     }
-
     return {success, failed};
   }
 
@@ -76,18 +74,16 @@ export default class FileService {
    *
    * @param path
    * @param buffer
-   * @returns {Promise<unknown>}
+   * @returns {*}
    */
-  uploadFileFromBuffer = async (path, buffer) => {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(path, buffer, 'binary', (err) => {
-        if (!err) {
-          resolve(path);
-        } else {
-          reject(err?.message ?? 'Error upload file')
-        }
-      });
-    });
+  uploadFileFromBuffer = (path, buffer) => {
+    try {
+      fs.writeFileSync(path, buffer, 'binary');
+      return path;
+    } catch (e) {
+      console.log(`[FileService][uploadFileFromBuffer] Error:  ${e?.message ?? e}`);
+      return null;
+    }
   }
 
   /**
