@@ -70,15 +70,7 @@ class ProductController {
       const id = req?.params?.id;
       const params = req?.body;
       const ProductService = req.getService(TYPES.ProductService);
-      const VariantService = req.getService(TYPES.VariantService);
-
-      const variants = params.variants.map(i => ({...i}))
-      delete params.variants;
-
       await ProductService.product.updateById(id, params);
-      await VariantService.saveVariants(id, variants);
-      await ProductService.product.updateVariantsIds(id);
-
       const productDto = await ProductService.product.getProductDtoById(id);
       return res.sendSuccess(productDto);
     } catch (e) {
@@ -117,7 +109,22 @@ class ProductController {
    * @param next
    * @returns {Promise<*>}
    */
-  uploadImages = async (req, res, next) => {
+  createVariant = async (req, res, next) => {
+    try {
+      return res.sendSuccess({});
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  createImages = async (req, res, next) => {
     try {
       const id = req.params.id;
       const ProductService = req.getService(TYPES.ProductService);
@@ -137,12 +144,11 @@ class ProductController {
    * @param next
    * @returns {Promise<*>}
    */
-  removeImages = async (req, res, next) => {
+  deleteImages = async (req, res, next) => {
     try {
       const id = req.params.id;
       const ProductService = req.getService(TYPES.ProductService);
-      const isRemoved = await ProductService.removeImages(id, req?.body.ids);
-
+      const isRemoved = await ProductService.removeImages(id, req?.query.ids);
       const message = isRemoved ? 'Removed success' : 'Removed with errors';
       return res.sendSuccess({message, error: !isRemoved});
     } catch (e) {
