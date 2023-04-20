@@ -132,6 +132,25 @@ Products.methods.getVariants = function () {
 
 /**
  *
+ * @returns {Promise<*>}
+ */
+Products.statics.getProductsJsonById = async function () {
+  return await this.find().populate([
+    {
+      path: 'category',
+      populate: 'options'
+    },
+    {
+      path: 'brand'
+    },
+    {
+      path: 'images'
+    }
+  ]);
+}
+
+/**
+ *
  * @param id
  * @returns {Promise<*|null>}
  */

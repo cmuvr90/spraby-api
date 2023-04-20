@@ -13,7 +13,7 @@ class ProductController {
   index = async (req, res, next) => {
     try {
       const ProductService = req.getService(TYPES.ProductService);
-      const products = await ProductService.product.getProductsDto();
+      const products = await ProductService.product.getProductsJsonById();
       return res.sendSuccess(products);
     } catch (e) {
       next(e)
@@ -111,7 +111,13 @@ class ProductController {
    */
   createVariant = async (req, res, next) => {
     try {
-      return res.sendSuccess({});
+      const params = req.body;
+      const id = req.params.id;
+
+      const ProductService = req.getService(TYPES.ProductService);
+      await ProductService.createVariant(id, params);
+      const product = await ProductService.product.getProductJsonById(id);
+      return res.sendSuccess(product);
     } catch (e) {
       next(e)
     }

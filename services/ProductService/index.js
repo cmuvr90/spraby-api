@@ -1,3 +1,5 @@
+import MainError from '../ErrorService/MainError';
+
 export default class ProductService {
 
   /**
@@ -10,6 +12,19 @@ export default class ProductService {
     this.product = Product;
     this.ImageService = ImageService;
     this.log = LogService.createLogger('ProductService');
+  }
+
+  /**
+   *
+   * @param productId
+   * @param params
+   * @returns {Promise<void>}
+   */
+  createVariant = async (productId, params) => {
+    const product = await this.product.findById(productId);
+    if (!product) return MainError.badRequestError('Product not found');
+    product.variants.push(params)
+    return await product.save();
   }
 
   /**

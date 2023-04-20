@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
 import Schema from '../index';
+import Images from '../Images';
+import Options from '../Options';
 
 const VALUE_FIELDS = {
-  optionId: {type: mongoose.Schema.Types.ObjectId, required: true},
+  option: {type: mongoose.Schema.Types.ObjectId, ref: Options},
   value: {type: String, required: true},
   title: {type: String, required: true},
 }
@@ -10,15 +12,23 @@ const VALUE_FIELDS = {
 const Values = new Schema(VALUE_FIELDS, {timestamps: false});
 
 const FIELDS = {
-  imageId: {type: mongoose.Schema.Types.ObjectId, default: null},
+  image: {type: mongoose.Schema.Types.ObjectId, ref: Images},
   title: {type: String, default: null},
   values: [Values]
 };
 
-const Variants = new Schema(FIELDS, {
-  timestamps: false,
-  toObject: {virtuals: true},
-  toJSON: {virtuals: true}
+const Variants = new Schema(FIELDS, {timestamps: false});
+
+Variants.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret._id;
+    delete ret.__v;
+  }
+});
+
+Variants.set('toObject', {
+  virtuals: true
 });
 
 /**
