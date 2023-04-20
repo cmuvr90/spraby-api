@@ -8,7 +8,6 @@ import CategoryModel from '../models/Categories';
 import CollectionModel from '../models/Collections';
 import OptionModel from '../models/Options';
 import ProductModel from '../models/Products';
-import VariantModel from '../models/Variants';
 import SessionModel from '../models/Sessions';
 import ImageModel from '../models/Images';
 
@@ -19,7 +18,6 @@ import CategoryService from '../services/CategoryService';
 import CollectionService from '../services/CollectionService';
 import OptionService from '../services/OptionService';
 import ProductService from '../services/ProductService';
-import VariantService from '../services/VariantService';
 import SessionService from '../services/SessionService';
 import ImageService from '../services/ImageService';
 import FileService from '../services/FileService';
@@ -56,11 +54,6 @@ decorate(inject(TYPES.ImageService), ProductService, 1);
 decorate(inject(TYPES.LogService), ProductService, 2);
 decorate(injectable(), ProductService);
 
-//VariantService
-decorate(inject(TYPES.VariantModel), VariantService, 0);
-decorate(inject(TYPES.LogService), VariantService, 1);
-decorate(injectable(), VariantService);
-
 //SessionService
 decorate(inject(TYPES.SessionModel), SessionService, 0);
 decorate(inject(TYPES.SessionConfig), SessionService, 1);
@@ -90,7 +83,6 @@ container.bind(TYPES.CategoryModel).toDynamicValue(() => CategoryModel);
 container.bind(TYPES.CollectionModel).toDynamicValue(() => CollectionModel);
 container.bind(TYPES.OptionModel).toDynamicValue(() => OptionModel);
 container.bind(TYPES.ProductModel).toDynamicValue(() => ProductModel);
-container.bind(TYPES.VariantModel).toDynamicValue(() => VariantModel);
 container.bind(TYPES.SessionModel).toDynamicValue(() => SessionModel);
 container.bind(TYPES.ImageModel).toDynamicValue(() => ImageModel);
 
@@ -100,7 +92,6 @@ container.bind(TYPES.CategoryService).to(CategoryService);
 container.bind(TYPES.CollectionService).to(CollectionService);
 container.bind(TYPES.OptionService).to(OptionService);
 container.bind(TYPES.ProductService).to(ProductService);
-container.bind(TYPES.VariantService).to(VariantService);
 container.bind(TYPES.LogService).to(LogService);
 container.bind(TYPES.SessionService).to(SessionService);
 container.bind(TYPES.ImageService).to(ImageService);

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import moment from 'moment';
 
-export default class Model {
+export default class Schema {
 
   /**
    *

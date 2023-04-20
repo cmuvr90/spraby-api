@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import Model from './index';
 import Brands from './Brands';
 import Categories from './Categories';
-import Variants from './Variants';
 import Images from './Images';
+import Variants from './schemas/Variants';
 import {getHandle} from '../services/utilites';
 
 const FIELDS = {
@@ -15,41 +15,14 @@ const FIELDS = {
   images: [
     {type: mongoose.Schema.Types.ObjectId, ref: Images}
   ],
-  variants: [
-    {type: mongoose.Schema.Types.ObjectId, ref: Variants}
-  ]
+  variants: [Variants]
 };
 
-const Products = new Model(FIELDS);
-
-//VALIDATIONS
-// Products.path('handle').validate(async function (value) {
-//   // try {
-//   //   let handle = value;
-//   //   const DELIMITER = '_';
-//   //
-//   //   const product = await mongoose.model('Products')
-//   //   .findOne({$or: [{handle: new RegExp(`^(${value})(${DELIMITER}\\d*)$`, 'i')}, {handle: value}]})
-//   //   .sort({createdAt: -1})
-//   //   .select({handle: 1});
-//   //
-//   //   if (product?.handle?.length) {
-//   //     const matched = product?.handle.match(new RegExp(`(${DELIMITER}\\d*)$`));
-//   //     if (matched && matched[0]?.length && Number.isInteger(+matched[0].replace('_', ''))) {
-//   //       handle = handle + DELIMITER + (+matched[0].replace('_', '') + 1);
-//   //     } else {
-//   //       handle = `${handle}_1`;
-//   //     }
-//   //   }
-//   //   this.handle = handle;
-//   //   return true;
-//   // } catch (e) {
-//   //   return false
-//   // }
-//   // return false
-//
-//   this.handle = value;
-// }, 'Handle has been unique');
+const Products = new Model(FIELDS, {
+  timestamps: true,
+  toObject: {virtuals: true},
+  toJSON: {virtuals: true}
+});
 
 //HOOKS
 Products.pre('validate', {document: true, query: true}, async function (next) {
@@ -59,9 +32,37 @@ Products.pre('validate', {document: true, query: true}, async function (next) {
 
 Products.pre('deleteOne', {document: true, query: true}, async function () {
   const product = await this.model.findOne(this.getQuery());
-  if (product?.variants) await Variants.deleteMany({_id: {$in: product.variants}})
   if (product?.images) await Images.deleteMany({_id: {$in: product.images}})
 });
+
+
+Products.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret._id;
+    delete ret.__v;
+    delete ret.category.options
+  }
+});
+
+Products.set('toObject', {
+  virtuals: true
+});
+
+/**
+ *
+ */
+Products.virtual('id').get(function () {
+  return `${this._id}`;
+});
+
+/**
+ *
+ */
+Products.virtual('options').get(function () {
+  return this.category.options;
+});
+
 
 //METHODS
 
@@ -70,7 +71,7 @@ Products.pre('deleteOne', {document: true, query: true}, async function () {
  * @returns {*}
  */
 Products.methods.getId = function () {
-  return `${this._id}`;
+  return this._id;
 }
 
 /**
@@ -86,7 +87,7 @@ Products.methods.getBrand = function () {
  * @returns {*}
  */
 Products.methods.getCategory = function () {
-  return this.category;
+  return this.categoryId;
 }
 
 /**
@@ -127,6 +128,32 @@ Products.methods.getImages = function () {
  */
 Products.methods.getVariants = function () {
   return this.variants;
+}
+
+/**
+ *
+ * @param id
+ * @returns {Promise<*|null>}
+ */
+Products.statics.getProductJsonById = async function (id) {
+  const product = await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate([{
+    path: 'category',
+    populate: 'options'
+  }, {path: 'brand'}, {path: 'images'}]);
+  return product ? await this.getProductJson(product) : null;
+}
+
+/**
+ *
+ * @param product
+ * @returns {*}
+ */
+Products.statics.getProductJson = async function (product) {
+
+  const json = product;
+  console.log(json?.category);
+
+  return json;
 }
 
 /**

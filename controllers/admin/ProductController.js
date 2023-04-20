@@ -31,7 +31,7 @@ class ProductController {
     try {
       const id = req?.params?.id;
       const ProductService = req.getService(TYPES.ProductService);
-      const product = await ProductService.product.getProductDtoById(id);
+      const product = await ProductService.product.getProductJsonById(id);
       return res.sendSuccess(product);
     } catch (e) {
       next(e)

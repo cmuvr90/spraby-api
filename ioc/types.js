@@ -5,7 +5,6 @@ export const TYPES = {
   CollectionModel: 'CollectionModel',
   OptionModel: 'OptionModel',
   ProductModel: 'ProductModel',
-  VariantModel: 'VariantModel',
   SessionModel: 'SessionModel',
   ImageModel: 'ImageModel',
 
@@ -15,7 +14,6 @@ export const TYPES = {
   CollectionService: 'CollectionService',
   OptionService: 'OptionService',
   ProductService: 'ProductService',
-  VariantService: 'VariantService',
   SessionService: 'SessionService',
   ImageService: 'ImageService',
   LogService: 'LogService',

@@ -19,7 +19,20 @@ const FIELDS = {
   values: [{type: String, required: true}]
 };
 
-const Options = new Model(FIELDS);
+const Options = new Model(FIELDS, {
+  timestamps: true,
+  toObject: {virtuals: true},
+  toJSON: {virtuals: true}
+});
+
+Options.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  }
+});
 
 /**
  *

@@ -15,7 +15,21 @@ const FIELDS = {
   ]
 };
 
-const Categories = new Model(FIELDS);
+const Categories = new Model(FIELDS, {
+  timestamps: true,
+  toObject: {virtuals: true},
+  toJSON: {virtuals: true}
+});
+
+
+Categories.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  }
+});
 
 /**
  *

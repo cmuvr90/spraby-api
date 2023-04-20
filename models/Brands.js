@@ -15,7 +15,19 @@ const FIELDS = {
   ]
 };
 
-const Brands = new Model(FIELDS);
+const Brands = new Model(FIELDS, {
+  timestamps: true,
+  toObject: {virtuals: true},
+  toJSON: {virtuals: true}
+});
+
+Brands.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret._id;
+    delete ret.__v;
+  }
+});
 
 /**
  *

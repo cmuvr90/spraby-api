@@ -5,8 +5,8 @@ import Categories from '../../models/Categories';
 import Collections from '../../models/Collections';
 import Users from '../../models/Users';
 import Brands from '../../models/Brands';
-import Variants from '../../models/Variants';
-import Products from '../../models/Products';
+// import Variants from '../../models/Variants';
+// import Products from '../../models/Products';
 
 class SeedCommand {
 
@@ -20,42 +20,42 @@ class SeedCommand {
    * @returns {Promise<void>}
    */
   async handle(params) {
-    await this.createOptions();
+    // await this.createOptions();
     await this.createCategories();
-    await this.createCollections();
-    await this.createUsers();
-    await this.createBrands();
-    await this.createProducts();
+    // await this.createCollections();
+    // await this.createUsers();
+    // await this.createBrands();
+    // await this.createProducts();
   }
 
   async createProducts() {
-    const brands = await Brands.find();
-    const categories = await Categories.find();
-
-    const productsData = getProductsData();
-
-    await Variants.deleteMany();
-    await Products.deleteMany();
-
-    const products = [];
-
-    for (const productData of productsData) {
-      const brand = brands.find(b => b.name === productData.brand);
-      const category = categories.find(c => c.name === productData.category);
-      const variantsData = productData.variants.map(v => ({title: v.join('/'), values: v}));
-      const variants = await Variants.insertMany(variantsData);
-
-      products.push({
-        ...productData,
-        handle: getHandle(productData.title),
-        brand: brand.id,
-        category: category.id,
-        variants: variants.map(i => i.id)
-      })
-    }
-
-    await Products.insertMany(products);
-    console.log('create products...');
+    // const brands = await Brands.find();
+    // const categories = await Categories.find();
+    //
+    // const productsData = getProductsData();
+    //
+    // await Variants.deleteMany();
+    // await Products.deleteMany();
+    //
+    // const products = [];
+    //
+    // for (const productData of productsData) {
+    //   const brand = brands.find(b => b.name === productData.brand);
+    //   const category = categories.find(c => c.name === productData.category);
+    //   const variantsData = productData.variants.map(v => ({title: v.join('/'), values: v}));
+    //   const variants = await Variants.insertMany(variantsData);
+    //
+    //   products.push({
+    //     ...productData,
+    //     handle: getHandle(productData.title),
+    //     brand: brand.id,
+    //     category: category.id,
+    //     variants: variants.map(i => i.id)
+    //   })
+    // }
+    //
+    // await Products.insertMany(products);
+    // console.log('create products...');
   }
 
   /**
