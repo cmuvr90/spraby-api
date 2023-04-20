@@ -50,9 +50,9 @@ class ProductController {
       const params = req?.body;
       const brand = await req.getService(TYPES.BrandService).brand.findOne(); //@todo fix
       const ProductService = req.getService(TYPES.ProductService);
-      const product = await ProductService.product.createProduct({...params, brand: brand.getId()});
-      const productDto = await ProductService.product.getProductDto(product);
-      return res.sendSuccess(productDto);
+      const data = await ProductService.product.createProduct({...params, brand: brand.getId()});
+      const product = await ProductService.product.getProductJsonById(data.id);
+      return res.sendSuccess(product);
     } catch (e) {
       next(e)
     }
@@ -71,8 +71,8 @@ class ProductController {
       const params = req?.body;
       const ProductService = req.getService(TYPES.ProductService);
       await ProductService.product.updateById(id, params);
-      const productDto = await ProductService.product.getProductDtoById(id);
-      return res.sendSuccess(productDto);
+      const product = await ProductService.product.getProductJsonById(id);
+      return res.sendSuccess(product);
     } catch (e) {
       next(e)
     }
@@ -90,7 +90,7 @@ class ProductController {
       const id = req?.params?.id;
       const ProductService = req.getService(TYPES.ProductService);
       const ImageService = req.getService(TYPES.ImageService);
-      const product = await ProductService.product.getProductDtoById(id);
+      const product = await ProductService.product.getProductJsonById(id);
       const imagesSrc = (product?.images ?? []).map(i => i.src);
 
       await ProductService.product.deleteById(id);

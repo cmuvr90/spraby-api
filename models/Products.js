@@ -41,7 +41,7 @@ Products.set('toJSON', {
   transform: function (doc, ret) {
     delete ret._id;
     delete ret.__v;
-    delete ret.category.options
+    if (!!ret?.category?.options?.length) delete ret.category.options
   }
 });
 
@@ -60,7 +60,7 @@ Products.virtual('id').get(function () {
  *
  */
 Products.virtual('options').get(function () {
-  return this.category.options;
+  return this.category?.options ?? [];
 });
 
 
@@ -136,24 +136,18 @@ Products.methods.getVariants = function () {
  * @returns {Promise<*|null>}
  */
 Products.statics.getProductJsonById = async function (id) {
-  const product = await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate([{
-    path: 'category',
-    populate: 'options'
-  }, {path: 'brand'}, {path: 'images'}]);
-  return product ? await this.getProductJson(product) : null;
-}
-
-/**
- *
- * @param product
- * @returns {*}
- */
-Products.statics.getProductJson = async function (product) {
-
-  const json = product;
-  console.log(json?.category);
-
-  return json;
+  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate([
+    {
+      path: 'category',
+      populate: 'options'
+    },
+    {
+      path: 'brand'
+    },
+    {
+      path: 'images'
+    }
+  ]);
 }
 
 /**
