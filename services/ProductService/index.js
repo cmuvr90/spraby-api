@@ -23,8 +23,32 @@ export default class ProductService {
   createVariant = async (productId, params) => {
     const product = await this.product.findById(productId);
     if (!product) return MainError.badRequestError('Product not found');
-    product.variants.push(params)
-    return await product.save();
+    return await product.addVariant(params);
+  }
+
+  /**
+   *
+   * @param productId
+   * @param variantId
+   * @param params
+   * @returns {Promise<*|void>}
+   */
+  updateVariant = async (productId, variantId, params) => {
+    const product = await this.product.findById(productId);
+    if (!product) return MainError.badRequestError('Product not found');
+    return await product.updateVariant(variantId, params);
+  }
+
+  /**
+   *
+   * @param productId
+   * @param variantId
+   * @returns {Promise<*|void>}
+   */
+  deleteVariant = async (productId, variantId) => {
+    const product = await this.product.findById(productId);
+    if (!product) return MainError.badRequestError('Product not found');
+    return await product.deleteVariant(variantId);
   }
 
   /**

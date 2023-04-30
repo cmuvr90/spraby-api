@@ -130,6 +130,49 @@ class ProductController {
    * @param next
    * @returns {Promise<*>}
    */
+  updateVariant = async (req, res, next) => {
+    try {
+      const params = req.body;
+      const productId = req.params.productId;
+      const variantId = req.params.variantId;
+
+      const ProductService = req.getService(TYPES.ProductService);
+      await ProductService.updateVariant(productId, variantId, params);
+      const product = await ProductService.product.getProductJsonById(productId);
+      return res.sendSuccess(product);
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  deleteVariant = async (req, res, next) => {
+    try {
+      const productId = req.params.productId;
+      const variantId = req.params.variantId;
+
+      const ProductService = req.getService(TYPES.ProductService);
+      await ProductService.deleteVariant(productId, variantId);
+      const product = await ProductService.product.getProductJsonById(productId);
+      return res.sendSuccess(product);
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
   createImages = async (req, res, next) => {
     try {
       const id = req.params.id;
