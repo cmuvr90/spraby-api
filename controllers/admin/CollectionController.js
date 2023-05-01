@@ -13,7 +13,7 @@ class CollectionController {
   index = async (req, res, next) => {
     try {
       const CollectionService = req.getService(TYPES.CollectionService);
-      const collections = await CollectionService.collection.getCollectionsDto();
+      const collections = await CollectionService.collection.getCollectionsJsonById();
       return res.sendSuccess(collections);
     } catch (e) {
       next(e)
@@ -29,9 +29,9 @@ class CollectionController {
    */
   get = async (req, res, next) => {
     try {
-      const handle = req?.params?.handle;
+      const id = req?.params?.id;
       const CollectionService = req.getService(TYPES.CollectionService);
-      const collection = await CollectionService.collection.getCollectionDtoByHandle(handle);
+      const collection = await CollectionService.collection.getCollectionJsonById(id);
       return res.sendSuccess(collection);
     } catch (e) {
       next(e)
@@ -49,9 +49,9 @@ class CollectionController {
     try {
       const params = req?.body;
       const CollectionService = req.getService(TYPES.CollectionService);
-      const collection = await CollectionService.collection.create({...params, handle: getHandle(params.name)});
-      const collectionDto = await CollectionService.collection.getCollectionDto(collection);
-      return res.sendSuccess(collectionDto);
+      const data = await CollectionService.collection.create({...params, handle: getHandle(params.name)});
+      const collection = await CollectionService.collection.getCollectionJsonById(data.id);
+      return res.sendSuccess(collection);
     } catch (e) {
       next(e)
     }
@@ -70,8 +70,8 @@ class CollectionController {
       const params = req?.body;
       const CollectionService = req.getService(TYPES.CollectionService);
       await CollectionService.collection.updateById(id, params);
-      const collectionDto = await CollectionService.collection.getCollectionDtoById(id);
-      return res.sendSuccess(collectionDto);
+      const collection = await CollectionService.collection.getCollectionJsonById(id);
+      return res.sendSuccess(collection);
     } catch (e) {
       next(e)
     }

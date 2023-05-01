@@ -15,14 +15,35 @@ const FIELDS = {
   ]
 };
 
-const Collections = new Model(FIELDS);
+const Collections = new Model(FIELDS, {
+  timestamps: true,
+  toObject: {virtuals: true},
+  toJSON: {virtuals: true}
+});
+
+
+Collections.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  }
+});
+
+/**
+ *
+ */
+Collections.virtual('id').get(function () {
+  return `${this._id}`;
+});
 
 /**
  *
  * @returns {*}
  */
 Collections.methods.getId = function () {
-  return `${this._id}`;
+  return this._id;
 }
 
 /**
@@ -77,55 +98,28 @@ Collections.methods.getCategories = function () {
 /**
  *
  * @param id
+ * @returns {Promise<*|null>}
+ */
+Collections.statics.getCollectionJsonById = async function (id) {
+  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate([
+    {
+      path: 'categories',
+      populate: 'options'
+    }
+  ]);
+}
+
+/**
+ *
  * @returns {Promise<*>}
  */
-Collections.statics.getCollectionDtoById = async function (id) {
-  return await this.getCollectionDto({_id: new mongoose.Types.ObjectId(id)})
-}
-
-/**
- *
- * @param handle
- * @returns {Promise<*>}
- */
-Collections.statics.getCollectionDtoByHandle = async function (handle) {
-  return await this.getCollectionDto({handle})
-}
-
-/**
- *
- * @param params
- * @returns {*|null}
- */
-Collections.statics.getCollectionDto = async function (params = {}) {
-  const collection = await this.findOne(params).populate([{path: 'categories', populate: 'options'}]);
-  return collection ? this.getDto(collection) : null;
-}
-
-/**
- *
- * @param params
- * @returns {*|null}
- */
-Collections.statics.getCollectionsDto = async function (params = {}) {
-  const collections = await this.find(params).populate([{path: 'categories', populate: 'options'}]);
-  return collections?.map(i => this.getDto(i));
-}
-
-/**
- *
- * @param collection
- * @returns {{name: *, options: *, description: *, handle: *, id: *, title: *}}
- */
-Collections.statics.getDto = function (collection) {
-  return {
-    id: collection.getId(),
-    handle: collection.getHandle(),
-    name: collection.getName(),
-    title: collection.getTitle(),
-    description: collection.getDescription(),
-    categories: collection.getCategories().map(i => Categories.getDto(i)),
-  }
+Collections.statics.getCollectionsJsonById = async function () {
+  return await this.find().populate([
+    {
+      path: 'categories',
+      populate: 'options'
+    }
+  ]);
 }
 
 export default mongoose.model('Collections', Collections);
