@@ -13,7 +13,7 @@ class CategoryController {
   index = async (req, res, next) => {
     try {
       const CategoryService = req.getService(TYPES.CategoryService);
-      const categories = await CategoryService.category.getCategoriesDto();
+      const categories = await CategoryService.category.getCategoriesJsonById();
       return res.sendSuccess(categories);
     } catch (e) {
       next(e)
@@ -29,9 +29,9 @@ class CategoryController {
    */
   get = async (req, res, next) => {
     try {
-      const handle = req?.params?.handle;
+      const id = req?.params?.id;
       const CategoryService = req.getService(TYPES.CategoryService);
-      const category = await CategoryService.category.getCategoryDtoByHandle(handle);
+      const category = await CategoryService.category.getCategoryJsonById(id);
       return res.sendSuccess(category);
     } catch (e) {
       next(e)
@@ -49,9 +49,9 @@ class CategoryController {
     try {
       const params = req?.body;
       const CategoryService = req.getService(TYPES.CategoryService);
-      const category = await CategoryService.category.create({...params, handle: getHandle(params.name)});
-      const categoryDto = await CategoryService.category.getCategoryDto(category);
-      return res.sendSuccess(categoryDto);
+      const data = await CategoryService.category.create({...params, handle: getHandle(params.name)});
+      const category = await CategoryService.category.getCategoryJsonById(data.id);
+      return res.sendSuccess(category);
     } catch (e) {
       next(e)
     }
@@ -70,8 +70,8 @@ class CategoryController {
       const params = req?.body;
       const CategoryService = req.getService(TYPES.CategoryService);
       await CategoryService.category.updateById(id, params);
-      const categoryDto = await CategoryService.category.getCategoryDtoById(id);
-      return res.sendSuccess(categoryDto);
+      const category = await CategoryService.category.getCategoryJsonById(id);
+      return res.sendSuccess(category);
     } catch (e) {
       next(e)
     }

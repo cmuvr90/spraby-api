@@ -33,10 +33,17 @@ Categories.set('toJSON', {
 
 /**
  *
+ */
+Categories.virtual('id').get(function () {
+  return `${this._id}`;
+});
+
+/**
+ *
  * @returns {*}
  */
 Categories.methods.getId = function () {
-  return `${this._id}`;
+  return this._id;
 }
 
 /**
@@ -90,56 +97,26 @@ Categories.methods.getOptions = function () {
 /**
  *
  * @param id
+ * @returns {Promise<*|null>}
+ */
+Categories.statics.getCategoryJsonById = async function (id) {
+  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate([
+    {
+      path: 'options',
+    }
+  ]);
+}
+
+/**
+ *
  * @returns {Promise<*>}
  */
-Categories.statics.getCategoryDtoById = async function (id) {
-  return await this.getCategoryDto({_id: new mongoose.Types.ObjectId(id)})
-}
-
-/**
- *
- * @param handle
- * @returns {Promise<*>}
- */
-Categories.statics.getCategoryDtoByHandle = async function (handle) {
-  return await this.getCategoryDto({handle})
-}
-
-/**
- *
- * @param params
- * @returns {*|null}
- */
-Categories.statics.getCategoryDto = async function (params = {}) {
-  const category = await this.findOne(params).populate('options');
-  return category ? this.getDto(category) : null;
-}
-
-/**
- *
- * @param params
- * @returns {*|null}
- */
-Categories.statics.getCategoriesDto = async function (params = {}) {
-  const categories = await this.find(params).populate('options');
-  return categories?.map(i => this.getDto(i));
-}
-
-/**
- *
- * @param category
- * @returns {null|{name: *, options: *, description: *, handle: *, id: *, title: *}}
- */
-Categories.statics.getDto = function (category = null) {
-  if (!category) return null;
-  return {
-    id: category.getId(),
-    handle: category.getHandle(),
-    name: category.getName(),
-    title: category.getTitle(),
-    description: category.getDescription(),
-    options: category.getOptions().map(i => Options.getDto(i)),
-  }
+Categories.statics.getCategoriesJsonById = async function () {
+  return await this.find().populate([
+    {
+      path: 'options',
+    }
+  ]);
 }
 
 export default mongoose.model('Categories', Categories);
