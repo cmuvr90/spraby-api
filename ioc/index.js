@@ -10,6 +10,7 @@ import OptionModel from '../models/Options';
 import ProductModel from '../models/Products';
 import SessionModel from '../models/Sessions';
 import ImageModel from '../models/Images';
+import NavigationModel from '../models/Navigations';
 
 import LogService from '../services/LogService';
 import UserService from '../services/UserService';
@@ -21,6 +22,7 @@ import ProductService from '../services/ProductService';
 import SessionService from '../services/SessionService';
 import ImageService from '../services/ImageService';
 import FileService from '../services/FileService';
+import SettingsService from '../services/SettingsService';
 
 //UserService
 decorate(inject(TYPES.UserModel), UserService, 0);
@@ -70,6 +72,11 @@ decorate(injectable(), ImageService);
 decorate(inject(TYPES.LogService), FileService, 0);
 decorate(injectable(), FileService);
 
+//FileService
+decorate(inject(TYPES.NavigationsModel), SettingsService, 0);
+decorate(inject(TYPES.LogService), SettingsService, 1);
+decorate(injectable(), SettingsService);
+
 //LogService
 decorate(inject(TYPES.LogConfig), LogService, 0);
 decorate(injectable(), LogService);
@@ -85,6 +92,7 @@ container.bind(TYPES.OptionModel).toDynamicValue(() => OptionModel);
 container.bind(TYPES.ProductModel).toDynamicValue(() => ProductModel);
 container.bind(TYPES.SessionModel).toDynamicValue(() => SessionModel);
 container.bind(TYPES.ImageModel).toDynamicValue(() => ImageModel);
+container.bind(TYPES.NavigationsModel).toDynamicValue(() => NavigationModel);
 
 container.bind(TYPES.UserService).to(UserService);
 container.bind(TYPES.BrandService).to(BrandService);
@@ -96,6 +104,7 @@ container.bind(TYPES.LogService).to(LogService);
 container.bind(TYPES.SessionService).to(SessionService);
 container.bind(TYPES.ImageService).to(ImageService);
 container.bind(TYPES.FileService).to(FileService);
+container.bind(TYPES.SettingsService).to(SettingsService);
 
 container.bind(TYPES.LogConfig).toDynamicValue(() => (config.log));
 container.bind(TYPES.SessionConfig).toDynamicValue(() => (config.session));

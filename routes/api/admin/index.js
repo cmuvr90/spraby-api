@@ -6,6 +6,7 @@ import collections from './collections';
 import options from './options';
 import products from './products';
 import variants from './variants';
+import navigations from './navigations';
 
 const apiRouterV1 = new Router();
 
@@ -20,5 +21,6 @@ collections(apiRouterV1)
 options(apiRouterV1)
 products(apiRouterV1)
 variants(apiRouterV1)
+navigations(apiRouterV1)
 
 export default apiRouterV1;

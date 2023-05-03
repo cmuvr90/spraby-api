@@ -7,6 +7,7 @@ export const TYPES = {
   ProductModel: 'ProductModel',
   SessionModel: 'SessionModel',
   ImageModel: 'ImageModel',
+  NavigationsModel: 'NavigationsModel',
 
   UserService: 'UserService',
   BrandService: 'BrandService',
@@ -18,6 +19,7 @@ export const TYPES = {
   ImageService: 'ImageService',
   LogService: 'LogService',
   FileService: 'FileService',
+  SettingsService: 'SettingsService',
 
   LogConfig: 'LogConfig',
   SessionConfig: 'SessionConfig'
