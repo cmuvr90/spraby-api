@@ -14,9 +14,16 @@ app.use(fileUpload());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
+
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:3001'
+  origin: (origin, callback) => {
+    if (['http://localhost:3001', 'http://localhost:3000'].indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error())
+    }
+  }
 }));
 
 app.use(express.static('public'))
