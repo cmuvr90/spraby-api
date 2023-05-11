@@ -14,22 +14,23 @@ app.use(fileUpload());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
-
-app.use(cors({
-  credentials: true,
-  origin: (origin, callback) => {
-    if (['http://localhost:3001', 'http://localhost:3000'].indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error())
-    }
-  }
-}));
-
 app.use(express.static('public'))
 app.use(express.static('files'))
 
 app.set('ioc', container);
+app.use(cors({
+  credentials: true,
+  origin: (origin, callback) => {
+    if (typeof origin === 'undefined') {
+      callback(null, true);
+    } else if (['http://localhost:3001', 'http://localhost:3000'].indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      console.log('Error CORS!')
+      callback(new Error())
+    }
+  }
+}));
 
 router.get('/', (req, res, next) => {
   return res.send(`<div style="margin: 200px auto; text-align: center;">SPRA.BY API 🚀</div>`);
