@@ -111,6 +111,20 @@ Collections.statics.getCollectionJsonById = async function (id) {
 
 /**
  *
+ * @param handle
+ * @returns {Promise<*>}
+ */
+Collections.statics.getCollectionJsonByHandle = async function (handle) {
+  return await this.findOne({handle}).populate([
+    {
+      path: 'categories',
+      populate: 'options'
+    }
+  ]);
+}
+
+/**
+ *
  * @returns {Promise<*>}
  */
 Collections.statics.getCollectionsJsonById = async function () {
