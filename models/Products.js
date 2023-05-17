@@ -4,6 +4,7 @@ import Brands from './Brands';
 import Categories from './Categories';
 import Images from './Images';
 import Variants from './schemas/Variants';
+import {getHandle} from '../services/utilites';
 
 const FIELDS = {
   brand: {type: mongoose.Schema.Types.ObjectId, ref: Brands, default: null},
@@ -158,8 +159,13 @@ Products.methods.updateVariant = async function (variantId, params) {
  *
  * @returns {Promise<*>}
  */
-Products.statics.getProductsJsonById = async function () {
-  return await this.find().populate([
+Products.statics.getProductsJsonById = async function (ids = []) {
+
+  const params = ids?.length ? {
+    _id: {$in: ids.map(i => new mongoose.Types.ObjectId(i))}
+  } : {};
+
+  return await this.find(params).populate([
     {
       path: 'category',
       populate: 'options'
@@ -208,10 +214,66 @@ Products.statics.createProduct = async function (params) {
   const data = {
     title: params.title,
     brand: params.brand,
+    handle: getHandle(params.title),
     description: params.description,
     category: params.category,
   }
   return this.create(data)
+}
+
+Products.statics.getProductsByParams = async function (params) {
+  const collectionId = params.collection;
+  const options = params?.options ?? null;
+
+  const match = options?.length ? {
+    $or: options.map(i => ({
+      $and: [
+        {'variants.values.value': {$in: i.values}},
+        {'variants.values.title': i.key}
+      ]
+    }))
+  } : {};
+
+  const products = await this.aggregate([
+    {
+      $match: match
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category",
+        foreignField: "_id",
+        as: "category",
+        pipeline: [
+          {
+            $lookup: {
+              from: 'collections',
+              localField: '_id',
+              foreignField: 'categories',
+              as: 'collections',
+              pipeline: [
+                {$match: {$expr: {$eq: ["$_id", new mongoose.Types.ObjectId(collectionId)]}}},
+              ]
+            }
+          },
+          {
+            $unwind: "$collections"
+          }
+        ]
+      }
+    },
+    {
+      $unwind: "$category"
+    },
+
+    {
+      $project: {
+        "_id": 1
+      }
+    }
+  ]).exec();
+  const productIds = products.map(i => i._id);
+  return productIds?.length ? this.getProductsJsonById(productIds) : [];
 }
 
 export default mongoose.model('Products', Products);
