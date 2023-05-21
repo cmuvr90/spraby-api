@@ -117,10 +117,10 @@ Brands.statics.getBrandJsonById = async function (id) {
  */
 Brands.statics.createBrand = async function (params) {
   const data = {
-    user: params.userId,
+    user: params.user,
     name: params.name,
     description: params.description,
-    categories: params.categoryIds
+    categories: params.categories
   }
   return this.create(data)
 }
