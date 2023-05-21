@@ -46,6 +46,23 @@ export default class UserService {
 
   /**
    *
+   * @param params
+   * @returns {Promise<*>}
+   */
+  async createUser(params) {
+    const hashPassword = await bcrypt.hash(params.password, 3);
+
+    return await this.user.createUser({
+      firstName: params.firstName,
+      lastName: params.lastName,
+      email: params.email,
+      role: this.user.ROLES.MANAGER,
+      password: hashPassword
+    });
+  }
+
+  /**
+   *
    * @param email
    * @param password
    * @returns {Promise<{accessToken: *, user: {role, name: *, id: *, email}, refreshToken: *}>}

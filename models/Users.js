@@ -119,6 +119,22 @@ Users.statics.getUserJsonById = async function (id) {
 
 /**
  *
+ * @param params
+ * @returns {Promise<data>}
+ */
+Users.statics.createUser = async function (params) {
+  const data = {
+    firstName: params.firstName,
+    lastName: params.lastName,
+    email: params.email,
+    role: params.role,
+    password: params.password,
+  }
+  return this.create(data)
+}
+
+/**
+ *
  * @type {{MANAGER: string, CUSTOMER: string, ADMIN: string}}
  */
 Users.statics.ROLES = ROLES;

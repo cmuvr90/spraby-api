@@ -50,8 +50,8 @@ class UserController {
     try {
       const params = req?.body;
       const UserService = req.getService(TYPES.UserService);
-      const data = await UserService.product.createUser({...params});
-      const user = await UserService.product.getProductJsonById(data.id);
+      const data = await UserService.createUser(params);
+      const user = await UserService.user.getUserJsonById(data.id);
       return res.sendSuccess(user);
     } catch (e) {
       next(e)
@@ -70,8 +70,8 @@ class UserController {
       const id = req?.params?.id;
       const params = req?.body;
       const UserService = req.getService(TYPES.UserService);
-      await UserService.product.updateById(id, params);
-      const user = await UserService.product.getProductJsonById(id);
+      await UserService.user.updateById(id, params);
+      const user = await UserService.user.getUserJsonById(id);
       return res.sendSuccess(user);
     } catch (e) {
       next(e)

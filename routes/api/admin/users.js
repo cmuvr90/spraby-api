@@ -15,7 +15,7 @@ export default function (router) {
 
   router.get('/users', auth, UserController.index);
   router.get('/users/:id', auth, UserController.get);
-  router.post('/users', auth, UserController.get);
-  router.put('/users/:id', auth, UserController.get);
-  router.delete('/users/:id', auth, UserController.get);
+  router.post('/users', auth, UserController.create);
+  router.put('/users/:id', auth, UserController.update);
+  router.delete('/users/:id', auth, UserController.delete);
 }
