@@ -12,7 +12,7 @@ class BrandController {
   index = async (req, res, next) => {
     try {
       const BrandService = req.getService(TYPES.BrandService);
-      const brands = await BrandService.brand.getBrandsDto();
+      const brands = await BrandService.brand.getBrandsJsonById();
       return res.sendSuccess(brands);
     } catch (e) {
       next(e)
@@ -30,7 +30,7 @@ class BrandController {
     try {
       const id = req?.params?.id;
       const BrandService = req.getService(TYPES.BrandService);
-      const brands = await BrandService.brand.getBrandDtoById(id);
+      const brands = await BrandService.brand.getBrandJsonById(id);
       return res.sendSuccess(brands);
     } catch (e) {
       next(e)
@@ -49,9 +49,9 @@ class BrandController {
       const params = req?.body;
       const user = req.user;
       const BrandService = req.getService(TYPES.BrandService);
-      const brand = await BrandService.brand.create({...params, user: user.id});
-      const brandDto = await BrandService.brand.getBrandDto(brand);
-      return res.sendSuccess(brandDto);
+      const data = await BrandService.brand.createBrand({...params, user: user.id});
+      const brand = await BrandService.brand.getBrandJsonById(data.id);
+      return res.sendSuccess(brand);
     } catch (e) {
       next(e)
     }
@@ -70,8 +70,8 @@ class BrandController {
       const params = req?.body;
       const BrandService = req.getService(TYPES.BrandService);
       await BrandService.brand.updateById(id, params);
-      const brandDto = await BrandService.brand.getBrandDtoById(id);
-      return res.sendSuccess(brandDto);
+      const brand = await BrandService.brand.getBrandJsonById(id);
+      return res.sendSuccess(brand);
     } catch (e) {
       next(e)
     }

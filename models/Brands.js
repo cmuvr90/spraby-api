@@ -31,10 +31,17 @@ Brands.set('toJSON', {
 
 /**
  *
+ */
+Brands.virtual('id').get(function () {
+  return `${this._id}`;
+});
+
+/**
+ *
  * @returns {*}
  */
 Brands.methods.getId = function () {
-  return `${this._id}`;
+  return this._id;
 }
 
 /**
@@ -79,46 +86,43 @@ Brands.methods.getCategories = function () {
 
 /**
  *
- * @param id
  * @returns {Promise<*>}
  */
-Brands.statics.getBrandDtoById = async function (id) {
-  return await this.getBrandDto({_id: new mongoose.Types.ObjectId(id)})
+Brands.statics.getBrandsJsonById = async function (ids = []) {
+
+  const params = ids?.length ? {
+    _id: {$in: ids.map(i => new mongoose.Types.ObjectId(i))}
+  } : {};
+
+  return await this.find(params).populate([{
+    path: 'categories'
+  }]);
+}
+
+/**
+ *
+ * @param id
+ * @returns {Promise<*|null>}
+ */
+Brands.statics.getBrandJsonById = async function (id) {
+  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate([{
+    path: 'categories'
+  }]);
 }
 
 /**
  *
  * @param params
- * @returns {*|null}
+ * @returns {Promise<data>}
  */
-Brands.statics.getBrandDto = async function (params = {}) {
-  const brand = await this.findOne(params).populate([{path: 'categories', populate: 'options'}]);
-  return brand ? this.getDto(brand) : null;
-}
-
-/**
- *
- * @param params
- * @returns {*|null}
- */
-Brands.statics.getBrandsDto = async function (params = {}) {
-  const brands = await this.find(params).populate([{path: 'categories', populate: 'options'}]);
-  return brands?.map(i => this.getDto(i));
-}
-
-/**
- *
- * @param brand
- * @returns {{name: any, description: *, id: *, categories, user}}
- */
-Brands.statics.getDto = function (brand) {
-  return {
-    id: brand.getId(),
-    user: brand.getUser(),
-    name: brand.getName(),
-    description: brand.getDescription(),
-    categories: brand.getCategories().map(i => Categories.getDto(i))
+Brands.statics.createBrand = async function (params) {
+  const data = {
+    user: params.userId,
+    name: params.name,
+    description: params.description,
+    categories: params.categoryIds
   }
+  return this.create(data)
 }
 
 export default mongoose.model('Brands', Brands);
