@@ -22,7 +22,7 @@ export default class UserService {
    *
    * @param email
    * @param password
-   * @returns {Promise<{readonly [Symbol.toStringTag]: string, finally: {<U>(onFinally?: () => (Promise<U> | U)): Promise<U>, (onfinally?: ((() => void) | undefined | null)): Promise<{tokens: {accessToken: *, refreshToken: *}}>}, then<TResult1={tokens: {accessToken: *, refreshToken: *}}, TResult2=never>(onfulfilled?: (((value: {tokens: {accessToken: *, refreshToken: *}}) => (PromiseLike<TResult1> | TResult1)) | undefined | null), onrejected?: (((reason: any) => (PromiseLike<TResult2> | TResult2)) | undefined | null)): Promise<TResult1 | TResult2>, catch<TResult=never>(onrejected?: (((reason: any) => (PromiseLike<TResult> | TResult)) | undefined | null)): Promise<{tokens: {accessToken: *, refreshToken: *}} | TResult>, user: {role, name: *, id: *, email}}>}
+   * @returns {Promise<{accessToken: *, user: *, refreshToken: *}>}
    */
   async login(email, password) {
     const user = await this.user.findOne({email});
@@ -32,7 +32,7 @@ export default class UserService {
     if (!isEquals) LoginError.badRequestError('Email or password is invalid');
 
     const tokens = await this.getUserJWTokens(user);
-    return {...tokens, user: this.user.getDto(user)}
+    return {...tokens, user: user.toJSON()}
   }
 
   /**
@@ -59,11 +59,10 @@ export default class UserService {
 
     user = await this.user.create({email, password: hashPassword, activationLink});
 
-    const userDto = this.user.getDto(user);
-    const tokens = this.sessionService.generateJWTokens({...userDto});
+    const tokens = this.sessionService.generateJWTokens({...user.toJSON()});
     await this.sessionService.saveJWToken(user.getId(), tokens.refreshToken);
 
-    return {...tokens, user: userDto}
+    return {...tokens, user: user.toJSON()}
   }
 
   /**
@@ -81,11 +80,10 @@ export default class UserService {
 
     const user = await this.user.findById(userData.id);
 
-    const userDto = this.user.getDto(user);
-    const tokens = this.sessionService.generateJWTokens({...userDto});
+    const tokens = this.sessionService.generateJWTokens({...user.toJSON()});
     await this.sessionService.saveJWToken(user.getId(), tokens.refreshToken);
 
-    return {...tokens, user: userDto}
+    return {...tokens, user: user.toJSON()}
   }
 
   /**
@@ -103,7 +101,7 @@ export default class UserService {
 
     const user = await this.user.findById(userData.id);
 
-    return user ? this.user.getDto(user) : null
+    return user ? user.toJSON() : null
   }
 
   /**
@@ -122,7 +120,7 @@ export default class UserService {
    * @returns {Promise<{accessToken: *, refreshToken: *}>}
    */
   async getUserJWTokens(user) {
-    const tokens = this.sessionService.generateJWTokens(this.user.getDto(user));
+    const tokens = this.sessionService.generateJWTokens(user.toJSON());
     await this.sessionService.saveJWToken(user.getId(), tokens.refreshToken);
     return {...tokens};
   }

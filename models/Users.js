@@ -20,14 +20,39 @@ const FIELDS = {
   password: {type: String, required: true},
 };
 
-const Users = new Model(FIELDS);
+const Users = new Model(FIELDS, {
+  timestamps: true,
+  toObject: {virtuals: true},
+  toJSON: {virtuals: true}
+});
+
+Users.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret._id;
+    delete ret.__v;
+    delete ret.password;
+    delete ret.activationLink;
+  }
+});
+
+Users.set('toObject', {
+  virtuals: true
+});
+
+/**
+ *
+ */
+Users.virtual('id').get(function () {
+  return `${this._id}`;
+});
 
 /**
  *
  * @returns {*}
  */
 Users.methods.getId = function () {
-  return `${this._id}`;
+  return this._id;
 }
 
 /**
@@ -72,46 +97,24 @@ Users.methods.getPassword = function () {
 
 /**
  *
+ * @returns {Promise<*>}
+ */
+Users.statics.getUsersJsonById = async function (ids = []) {
+
+  const params = ids?.length ? {
+    _id: {$in: ids.map(i => new mongoose.Types.ObjectId(i))}
+  } : {};
+
+  return await this.find(params);
+}
+
+/**
+ *
  * @param id
  * @returns {Promise<*>}
  */
-Users.statics.getUserDtoById = async function (id) {
-  return await this.getUserDto({_id: new mongoose.Types.ObjectId(id)})
-}
-
-/**
- *
- * @param params
- * @returns {Promise<*>}
- */
-Users.statics.getUsersDto = async function (params = {}) {
-  const users = await this.find(params);
-  return users?.map(i => this.getDto(i));
-}
-
-/**
- *
- * @param params
- * @returns {Promise<{firstName, lastName, role, id: *, email}|null>}
- */
-Users.statics.getUserDto = async function (params = {}) {
-  const user = await this.findOne(params);
-  return user ? this.getDto(user) : null;
-}
-
-/**
- *
- * @param user
- * @returns {{firstName, lastName, role, id: *, email}}
- */
-Users.statics.getDto = function (user) {
-  return {
-    id: user.getId(),
-    firstName: user.getFirstName(),
-    lastName: user.getLastName(),
-    email: user.getEmail(),
-    role: user.getRole(),
-  }
+Users.statics.getUserJsonById = async function (id) {
+  return await this.findOne({_id: new mongoose.Types.ObjectId(id)});
 }
 
 /**

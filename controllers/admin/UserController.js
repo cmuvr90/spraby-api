@@ -14,7 +14,7 @@ class UserController {
   index = async (req, res, next) => {
     try {
       const UserService = req.getService(TYPES.UserService);
-      const users = await UserService.user.getUsersDto();
+      const users = await UserService.user.getUsersJsonById();
       return res.sendSuccess(users);
     } catch (e) {
       next(e);
@@ -32,8 +32,65 @@ class UserController {
     try {
       const id = req?.params?.id;
       const UserService = req.getService(TYPES.UserService);
-      const user = await UserService.user.getUserDtoById(id);
+      const user = await UserService.user.getUserJsonById(id);
       return res.sendSuccess(user);
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  create = async (req, res, next) => {
+    try {
+      const params = req?.body;
+      const UserService = req.getService(TYPES.UserService);
+      const data = await UserService.product.createUser({...params});
+      const user = await UserService.product.getProductJsonById(data.id);
+      return res.sendSuccess(user);
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  update = async (req, res, next) => {
+    try {
+      const id = req?.params?.id;
+      const params = req?.body;
+      const UserService = req.getService(TYPES.UserService);
+      await UserService.product.updateById(id, params);
+      const user = await UserService.product.getProductJsonById(id);
+      return res.sendSuccess(user);
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  delete = async (req, res, next) => {
+    try {
+      const id = req?.params?.id;
+      const UserService = req.getService(TYPES.UserService);
+      await UserService.user.deleteById(id);
+      return res.sendSuccess({});
     } catch (e) {
       next(e)
     }
