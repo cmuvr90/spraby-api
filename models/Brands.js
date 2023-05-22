@@ -105,9 +105,7 @@ Brands.statics.getBrandsJsonById = async function (ids = []) {
  * @returns {Promise<*|null>}
  */
 Brands.statics.getBrandJsonById = async function (id) {
-  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate([{
-    path: 'categories'
-  }]);
+  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate(['categories', 'user']);
 }
 
 /**

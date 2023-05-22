@@ -47,9 +47,8 @@ class BrandController {
   create = async (req, res, next) => {
     try {
       const params = req?.body;
-      const user = req.user;
       const BrandService = req.getService(TYPES.BrandService);
-      const data = await BrandService.brand.createBrand({...params, user: user.id});
+      const data = await BrandService.brand.createBrand({...params});
       const brand = await BrandService.brand.getBrandJsonById(data.id);
       return res.sendSuccess(brand);
     } catch (e) {

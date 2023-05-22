@@ -97,15 +97,44 @@ Users.methods.getPassword = function () {
 
 /**
  *
+ * @param queryParams
  * @returns {Promise<*>}
  */
-Users.statics.getUsersJsonById = async function (ids = []) {
+Users.statics.getUsersJsonById = async function (queryParams = {}) {
+  let params = {role: {$ne: 'admin'}};
 
-  const params = ids?.length ? {
-    _id: {$in: ids.map(i => new mongoose.Types.ObjectId(i))}
-  } : {};
+  if (queryParams?.query?.length) {
+    params.$or = ['firstName', 'lastName', 'email'].map(i => ({
+      firstName: {
+        $regex: `${queryParams?.query}`.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+        $options: 'i'
+      }
+    }));
+  }
 
-  return await this.find(params);
+  const query = this.find(params);
+
+  if (queryParams.hasOwnProperty('page')) {
+    const limit = +(queryParams['limit'] ?? 10);
+    const count = await this.countDocuments(params);
+    const page = +queryParams.page;
+    const pages = limit > 0 ? Math.ceil(count / +limit) : 0;
+
+    query.skip(limit * (page - 1)).limit(limit);
+
+    return {
+      items: await query,
+      paginator: {
+        count,
+        pages,
+        page,
+        next: page < pages,
+        prev: page > 1
+      }
+    }
+  } else {
+    return await query;
+  }
 }
 
 /**

@@ -14,7 +14,7 @@ class UserController {
   index = async (req, res, next) => {
     try {
       const UserService = req.getService(TYPES.UserService);
-      const users = await UserService.user.getUsersJsonById();
+      const users = await UserService.user.getUsersJsonById(req.query);
       return res.sendSuccess(users);
     } catch (e) {
       next(e);
