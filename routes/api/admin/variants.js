@@ -1,12 +1,12 @@
 import VariantController from '../../../controllers/admin/VariantController';
-import {auth} from '../../../middlewares';
+import {auth, manager} from '../../../middlewares';
 
 /**
  *
  * @param router
  */
 export default function (router) {
-  router.get('/variants/list', auth, VariantController.index);
-  router.post('/variants/save', auth, VariantController.create);
-  router.delete('/variants/:id', auth, VariantController.delete);
+  router.get('/variants/list', auth, manager, VariantController.index);
+  router.post('/variants/save', auth, manager, VariantController.create);
+  router.delete('/variants/:id', auth, manager, VariantController.delete);
 }
