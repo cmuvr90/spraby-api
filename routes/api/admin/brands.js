@@ -1,15 +1,15 @@
 import BrandController from '../../../controllers/admin/BrandController';
-import {auth, admin} from '../../../middlewares';
+import {auth} from '../../../middlewares';
 
 /**
  *
  * @param router
  */
 export default function (router) {
-  router.get('/brands', auth, admin, BrandController.index);
-  router.get('/brands/:id', auth, admin, BrandController.get);
+  router.get('/brands', auth, BrandController.index);
+  router.get('/brands/:id', auth, BrandController.get);
 
-  router.post('/brands', auth, admin, BrandController.create);
-  router.put('/brands/:id', auth, admin, BrandController.update);
-  router.delete('/brands/:id', auth, admin, BrandController.delete);
+  router.post('/brands', auth, BrandController.create);
+  router.put('/brands/:id', auth, BrandController.update);
+  router.delete('/brands/:id', auth, BrandController.delete);
 }

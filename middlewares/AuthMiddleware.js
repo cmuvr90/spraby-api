@@ -20,6 +20,14 @@ const AuthMiddleware = async (req, res, next) => {
     if (!userData) AuthError.unauthorizedError();
 
     req.user = userData;
+
+    const isCheck = req.getService(TYPES.PermissionService).check(req);
+    if (!isCheck) AuthError.unauthorizedError();
+
+    const user = await req.getService(TYPES.UserService).user.findOne({email: userData.email})
+    if (!user) AuthError.unauthorizedError();
+
+    req.user = user;
     next();
   } catch (e) {
     return next(e);

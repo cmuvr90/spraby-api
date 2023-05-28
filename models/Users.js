@@ -97,6 +97,22 @@ Users.methods.getPassword = function () {
 
 /**
  *
+ * @returns {*}
+ */
+Users.methods.isManager = function () {
+  return this.getRole() === ROLES.MANAGER;
+}
+
+/**
+ *
+ * @returns {*}
+ */
+Users.methods.isAdmin = function () {
+  return this.getRole() === ROLES.ADMIN;
+}
+
+/**
+ *
  * @param queryParams
  * @returns {Promise<*>}
  */

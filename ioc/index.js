@@ -23,6 +23,7 @@ import SessionService from '../services/SessionService';
 import ImageService from '../services/ImageService';
 import FileService from '../services/FileService';
 import SettingsService from '../services/SettingsService';
+import PermissionService from '../services/PermissionService';
 
 //UserService
 decorate(inject(TYPES.UserModel), UserService, 0);
@@ -77,6 +78,10 @@ decorate(inject(TYPES.NavigationsModel), SettingsService, 0);
 decorate(inject(TYPES.LogService), SettingsService, 1);
 decorate(injectable(), SettingsService);
 
+decorate(inject(TYPES.UserService), PermissionService, 0);
+decorate(inject(TYPES.LogService), PermissionService, 1);
+decorate(injectable(), PermissionService);
+
 //LogService
 decorate(inject(TYPES.LogConfig), LogService, 0);
 decorate(injectable(), LogService);
@@ -105,6 +110,7 @@ container.bind(TYPES.SessionService).to(SessionService);
 container.bind(TYPES.ImageService).to(ImageService);
 container.bind(TYPES.FileService).to(FileService);
 container.bind(TYPES.SettingsService).to(SettingsService);
+container.bind(TYPES.PermissionService).to(PermissionService);
 
 container.bind(TYPES.LogConfig).toDynamicValue(() => (config.log));
 container.bind(TYPES.SessionConfig).toDynamicValue(() => (config.session));

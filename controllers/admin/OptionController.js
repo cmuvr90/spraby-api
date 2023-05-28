@@ -13,7 +13,7 @@ class OptionController {
   index = async (req, res, next) => {
     try {
       const OptionService = req.getService(TYPES.OptionService);
-      const options = await OptionService.option.getOptionsDto();
+      const options = await OptionService.option.getOptionsJsonById();
       return res.sendSuccess(options);
     } catch (e) {
       next(e)
@@ -31,7 +31,7 @@ class OptionController {
     try {
       const id = req?.params?.id;
       const OptionService = req.getService(TYPES.OptionService);
-      const option = await OptionService.option.getOptionDtoById(id);
+      const option = await OptionService.option.getOptionJsonById(id);
       return res.sendSuccess(option);
     } catch (e) {
       next(e)
@@ -49,9 +49,9 @@ class OptionController {
     try {
       const params = req?.body;
       const OptionService = req.getService(TYPES.OptionService);
-      const option = await OptionService.option.create({...params, key: getHandle(params.name)});
-      const optionDto = await OptionService.option.getOptionDto(option);
-      return res.sendSuccess(optionDto);
+      const data = await OptionService.option.create({...params, key: getHandle(params.name)});
+      const option = await OptionService.option.getOptionJsonById(data.id);
+      return res.sendSuccess(option);
     } catch (e) {
       next(e)
     }
@@ -70,8 +70,8 @@ class OptionController {
       const params = req?.body;
       const OptionService = req.getService(TYPES.OptionService);
       await OptionService.option.updateById(id, params);
-      const optionDto = await OptionService.option.getOptionDtoById(id);
-      return res.sendSuccess(optionDto);
+      const option = await OptionService.option.getOptionJsonById(id);
+      return res.sendSuccess(option);
     } catch (e) {
       next(e)
     }
