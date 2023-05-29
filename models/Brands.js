@@ -8,11 +8,9 @@ const FIELDS = {
   image: {type: String, default: null},
   name: {type: String, default: null},
   description: {type: String, default: null},
-  categories: [
-    {
-      type: mongoose.Schema.Types.ObjectId, ref: Categories
-    }
-  ]
+  categories: [{
+    type: mongoose.Schema.Types.ObjectId, ref: Categories
+  }]
 };
 
 const Brands = new Model(FIELDS, {
@@ -94,9 +92,7 @@ Brands.statics.getBrandsJsonById = async function (ids = []) {
     _id: {$in: ids.map(i => new mongoose.Types.ObjectId(i))}
   } : {};
 
-  return await this.find(params).populate([{
-    path: 'categories'
-  }]);
+  return await this.find(params).populate([{path: 'categories'}]);
 }
 
 /**

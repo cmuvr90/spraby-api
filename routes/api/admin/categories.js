@@ -1,12 +1,12 @@
 import CategoryController from '../../../controllers/admin/CategoryController';
-import {auth} from '../../../middlewares';
+import {auth, manager} from '../../../middlewares';
 
 /**
  *
  * @param router
  */
 export default function (router) {
-  router.get('/categories', auth, CategoryController.index);
+  router.get('/categories', auth, manager, CategoryController.index);
   router.get('/categories/:id', auth, CategoryController.get);
 
   router.post('/categories', auth, CategoryController.create);

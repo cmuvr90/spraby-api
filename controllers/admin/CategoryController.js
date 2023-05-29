@@ -13,7 +13,10 @@ class CategoryController {
   index = async (req, res, next) => {
     try {
       const CategoryService = req.getService(TYPES.CategoryService);
-      const categories = await CategoryService.category.getCategoriesJsonById();
+      const params = {};
+      if (req.query?.ids?.length) params.ids = req.query.ids;
+
+      const categories = await CategoryService.category.getCategoriesJson(params);
       return res.sendSuccess(categories);
     } catch (e) {
       next(e)

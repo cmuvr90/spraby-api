@@ -8,11 +8,9 @@ const FIELDS = {
   title: {type: String, default: null},
   description: {type: String, default: null},
   image: {type: String, default: null},
-  options: [
-    {
-      type: mongoose.Schema.Types.ObjectId, ref: Options
-    }
-  ]
+  options: [{
+    type: mongoose.Schema.Types.ObjectId, ref: Options
+  }]
 };
 
 const Categories = new Model(FIELDS, {
@@ -109,16 +107,16 @@ Categories.statics.getCategoryJsonById = async function (id) {
 
 /**
  *
- * @param ids
+ * @param params
  * @returns {Promise<*>}
  */
-Categories.statics.getCategoriesJsonById = async function (ids = []) {
+Categories.statics.getCategoriesJson = async function (params = {}) {
 
-  const params = ids?.length ? {
-    _id: {$in: ids.map(i => new mongoose.Types.ObjectId(i))}
+  const queryParams = params?.ids?.length ? {
+    _id: {$in: params.ids.map(i => new mongoose.Types.ObjectId(i))}
   } : {};
 
-  return await this.find(params).populate([
+  return await this.find(queryParams).populate([
     {
       path: 'options',
     }
