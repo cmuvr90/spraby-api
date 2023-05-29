@@ -127,8 +127,13 @@ Collections.statics.getCollectionJsonByHandle = async function (handle) {
  *
  * @returns {Promise<*>}
  */
-Collections.statics.getCollectionsJsonById = async function () {
-  return await this.find().populate([
+Collections.statics.getCollectionsJsonById = async function (ids) {
+
+  const params = ids?.length ? {
+    _id: {$in: ids.map(i => new mongoose.Types.ObjectId(i))}
+  } : {};
+
+  return await this.find(params).populate([
     {
       path: 'categories',
       populate: 'options'

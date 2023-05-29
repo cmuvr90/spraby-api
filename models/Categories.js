@@ -109,10 +109,16 @@ Categories.statics.getCategoryJsonById = async function (id) {
 
 /**
  *
+ * @param ids
  * @returns {Promise<*>}
  */
-Categories.statics.getCategoriesJsonById = async function () {
-  return await this.find().populate([
+Categories.statics.getCategoriesJsonById = async function (ids = []) {
+
+  const params = ids?.length ? {
+    _id: {$in: ids.map(i => new mongoose.Types.ObjectId(i))}
+  } : {};
+
+  return await this.find(params).populate([
     {
       path: 'options',
     }

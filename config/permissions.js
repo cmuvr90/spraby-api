@@ -1,6 +1,6 @@
 const permissions = {
-  BRANDS_READ: 'brand_read',
-  BRANDS_WRITE: 'brand_write',
+  BRANDS_READ: 'brands_read',
+  BRANDS_WRITE: 'brands_write',
 
   CATEGORIES_READ: 'categories_read',
   CATEGORIES_WRITE: 'categories_write',

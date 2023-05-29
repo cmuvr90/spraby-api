@@ -40,9 +40,12 @@ Users.set('toObject', {
   virtuals: true
 });
 
-/**
- *
- */
+Users.virtual('brands', {
+  ref: 'Brands',
+  localField: '_id',
+  foreignField: 'user'
+});
+
 Users.virtual('id').get(function () {
   return `${this._id}`;
 });
@@ -159,7 +162,16 @@ Users.statics.getUsersJsonById = async function (queryParams = {}) {
  * @returns {Promise<*>}
  */
 Users.statics.getUserJsonById = async function (id) {
-  return await this.findOne({_id: new mongoose.Types.ObjectId(id)});
+  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate('brands');
+}
+
+/**
+ *
+ * @param email
+ * @returns {Promise<*>}
+ */
+Users.statics.getUserJsonByEmail = async function (email) {
+  return await this.findOne({email}).populate('brands');
 }
 
 /**
