@@ -1,5 +1,5 @@
 import BrandController from '../../../controllers/admin/BrandController';
-import {auth} from '../../../middlewares';
+import {auth, admin} from '../../../middlewares';
 
 /**
  *
@@ -12,4 +12,6 @@ export default function (router) {
   router.post('/brands', auth, BrandController.create);
   router.put('/brands/:id', auth, BrandController.update);
   router.delete('/brands/:id', auth, BrandController.delete);
+
+  router.post('/brands/login', auth, admin, BrandController.login);
 }

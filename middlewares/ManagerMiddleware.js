@@ -1,3 +1,5 @@
+import AuthError from '../services/ErrorService/AuthError';
+
 const ManagerMiddleware = async (req, res, next) => {
   try {
     const user = req.getUser();
@@ -17,7 +19,7 @@ const ManagerMiddleware = async (req, res, next) => {
 
     next();
   } catch (e) {
-    return next(e);
+    AuthError.unauthorizedError();
   }
 }
 
