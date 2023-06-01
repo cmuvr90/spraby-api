@@ -124,7 +124,7 @@ Users.statics.getUsersJsonById = async function (queryParams = {}) {
 
   if (queryParams?.query?.length) {
     params.$or = ['firstName', 'lastName', 'email'].map(i => ({
-      firstName: {
+      [i]: {
         $regex: `${queryParams?.query}`.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
         $options: 'i'
       }
