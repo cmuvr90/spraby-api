@@ -21,6 +21,7 @@ export default class Schema {
     this.model.statics.deleteByIds = this.deleteByIds;
     this.model.statics.findById = this.findById;
     this.model.statics.findByIds = this.findByIds;
+    this.model.statics.paginate = this.paginate;
 
     return this.model;
   }
@@ -112,5 +113,61 @@ export default class Schema {
    */
   deleteByIds = async function (ids) {
     return await this.deleteMany({_id: {$in: ids.map(id => new mongoose.Types.ObjectId(id))}});
+  }
+
+  /**
+   *
+   * @param queryParams
+   * @param defaultParams
+   * @param populate
+   * @param searchFields
+   * @returns {Promise<*|{paginator: {next: boolean, pages: (number|number), prev: boolean, count: *, page: number}, items: *}>}
+   */
+  paginate = async function ({
+    queryParams = {},
+    defaultParams = {},
+    populate = null,
+    searchFields = ['name', 'title', 'description']
+  }) {
+    let params = defaultParams;
+
+    if (queryParams?.ids?.length) {
+      params._id = {$in: queryParams.ids.map(i => new mongoose.Types.ObjectId(i))}
+    }
+
+    if (queryParams?.query?.length) {
+      params.$or = searchFields.map(i => ({
+        [i]: {
+          $regex: `${queryParams?.query}`.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+          $options: 'i'
+        }
+      }));
+    }
+
+    const query = this.find(params)
+
+    if (populate) query.populate(populate);
+
+    if (queryParams.hasOwnProperty('page')) {
+      const limit = +(queryParams['limit'] ?? 10);
+      const count = await this.countDocuments(params);
+      const page = +queryParams.page;
+      const pages = limit > 0 ? Math.ceil(count / +limit) : 0;
+
+      query.skip(limit * (page - 1)).limit(limit);
+
+      return {
+        items: await query,
+        paginator: {
+          count,
+          pages,
+          page,
+          next: page < pages,
+          prev: page > 1
+        }
+      }
+    } else {
+      return await query;
+    }
   }
 }

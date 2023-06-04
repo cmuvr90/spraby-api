@@ -13,7 +13,13 @@ class OptionController {
   index = async (req, res, next) => {
     try {
       const OptionService = req.getService(TYPES.OptionService);
-      const options = await OptionService.option.getOptionsJsonById();
+      const params = {};
+      if (req.query?.ids?.length) params.ids = req.query.ids;
+      if (req.query?.page) params.page = req.query.page;
+      if (req.query?.limit) params.limit = req.query.limit;
+      if (req.query?.query) params.query = req.query.query;
+
+      const options = await OptionService.option.getOptionsJson(params);
       return res.sendSuccess(options);
     } catch (e) {
       next(e)

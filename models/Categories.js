@@ -98,57 +98,17 @@ Categories.methods.getOptions = function () {
  * @returns {Promise<*|null>}
  */
 Categories.statics.getCategoryJsonById = async function (id) {
-  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate([
-    {
-      path: 'options',
-    }
-  ]);
+  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate('options');
 }
 
 /**
  *
  * @param queryParams
- * @returns {Promise<*|{paginator: {next: boolean, pages: (number|number), prev: boolean, count: *, page: number}, items: *}>}
+ * @param populate
+ * @returns {Promise<*>}
  */
-Categories.statics.getCategoriesJson = async function (queryParams = {}) {
-  let params = {};
-
-  if (queryParams?.ids?.length) {
-    params._id = {$in: queryParams.ids.map(i => new mongoose.Types.ObjectId(i))}
-  }
-
-  if (queryParams?.query?.length) {
-    params.$or = ['name', 'title', 'description'].map(i => ({
-      [i]: {
-        $regex: `${queryParams?.query}`.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-        $options: 'i'
-      }
-    }));
-  }
-
-  const query = this.find(params).populate('options');
-
-  if (queryParams.hasOwnProperty('page')) {
-    const limit = +(queryParams['limit'] ?? 10);
-    const count = await this.countDocuments(params);
-    const page = +queryParams.page;
-    const pages = limit > 0 ? Math.ceil(count / +limit) : 0;
-
-    query.skip(limit * (page - 1)).limit(limit);
-
-    return {
-      items: await query,
-      paginator: {
-        count,
-        pages,
-        page,
-        next: page < pages,
-        prev: page > 1
-      }
-    }
-  } else {
-    return await query;
-  }
+Categories.statics.getCategoriesJson = async function (queryParams = {}, populate = 'options') {
+  return await this.paginate({queryParams, populate});
 }
 
 export default mongoose.model('Categories', Categories);

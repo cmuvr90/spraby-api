@@ -92,10 +92,11 @@ Options.methods.getValues = function () {
 
 /**
  *
+ * @param queryParams
  * @returns {Promise<*>}
  */
-Options.statics.getOptionsJsonById = async function (params = {}) {
-  return await this.find(params);
+Options.statics.getOptionsJson = async function (queryParams = {}) {
+  return await this.paginate({queryParams});
 }
 
 /**

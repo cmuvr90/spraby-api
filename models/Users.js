@@ -120,40 +120,11 @@ Users.methods.isAdmin = function () {
  * @returns {Promise<*>}
  */
 Users.statics.getUsersJsonById = async function (queryParams = {}) {
-  let params = {role: {$ne: 'admin'}};
-
-  if (queryParams?.query?.length) {
-    params.$or = ['firstName', 'lastName', 'email'].map(i => ({
-      [i]: {
-        $regex: `${queryParams?.query}`.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-        $options: 'i'
-      }
-    }));
-  }
-
-  const query = this.find(params);
-
-  if (queryParams.hasOwnProperty('page')) {
-    const limit = +(queryParams['limit'] ?? 10);
-    const count = await this.countDocuments(params);
-    const page = +queryParams.page;
-    const pages = limit > 0 ? Math.ceil(count / +limit) : 0;
-
-    query.skip(limit * (page - 1)).limit(limit);
-
-    return {
-      items: await query,
-      paginator: {
-        count,
-        pages,
-        page,
-        next: page < pages,
-        prev: page > 1
-      }
-    }
-  } else {
-    return await query;
-  }
+  return await this.paginate({
+    queryParams,
+    defaultParams: {role: {$ne: 'admin'}},
+    searchFields: ['firstName', 'lastName', 'email']
+  });
 }
 
 /**
