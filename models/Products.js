@@ -221,6 +221,11 @@ Products.statics.createProduct = async function (params) {
   return this.create(data)
 }
 
+/**
+ *
+ * @param params
+ * @returns {Promise<Promise<*>|*[]>}
+ */
 Products.statics.getProductsByParams = async function (params) {
   const collectionId = params.collection;
   const options = params?.options ?? null;
@@ -228,8 +233,8 @@ Products.statics.getProductsByParams = async function (params) {
   const match = options?.length ? {
     $or: options.map(i => ({
       $and: [
-        {'variants.values.value': {$in: i.values}},
-        {'variants.values.title': i.key}
+        {'variants.values.option': new mongoose.Types.ObjectId(i.optionId)},
+        {'variants.values.value': {$in: i.values}}
       ]
     }))
   } : {};
