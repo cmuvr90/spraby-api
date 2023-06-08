@@ -19,6 +19,23 @@ class ProductController {
       next(e)
     }
   }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  get = async (req, res, next) => {
+    try {
+      const ProductService = req.getService(TYPES.ProductService);
+      const product = await ProductService.product.getProductJsonById(req.params.id);
+      return res.sendSuccess(product);
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default new ProductController()
