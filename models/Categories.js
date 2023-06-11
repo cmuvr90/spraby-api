@@ -103,6 +103,15 @@ Categories.statics.getCategoryJsonById = async function (id) {
 
 /**
  *
+ * @param handle
+ * @returns {Promise<*>}
+ */
+Categories.statics.getCategoryJsonByHandle = async function (handle) {
+  return await this.findOne({handle}).populate('options');
+}
+
+/**
+ *
  * @param queryParams
  * @param populate
  * @returns {Promise<*>}

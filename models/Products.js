@@ -227,7 +227,7 @@ Products.statics.createProduct = async function (params) {
  * @returns {Promise<Promise<*>|*[]>}
  */
 Products.statics.getProductsByParams = async function (params) {
-  const collectionId = params.collection;
+  const categories = params.categories ?? [];
   const options = params?.options ?? null;
 
   const match = options?.length ? {
@@ -251,18 +251,7 @@ Products.statics.getProductsByParams = async function (params) {
         as: "category",
         pipeline: [
           {
-            $lookup: {
-              from: 'collections',
-              localField: '_id',
-              foreignField: 'categories',
-              as: 'collections',
-              pipeline: [
-                {$match: {$expr: {$eq: ["$_id", new mongoose.Types.ObjectId(collectionId)]}}},
-              ]
-            }
-          },
-          {
-            $unwind: "$collections"
+            $match: {$expr: {$in: ["$_id", categories.map(id => new mongoose.Types.ObjectId(id))]}}
           }
         ]
       }
@@ -270,7 +259,6 @@ Products.statics.getProductsByParams = async function (params) {
     {
       $unwind: "$category"
     },
-
     {
       $project: {
         "_id": 1

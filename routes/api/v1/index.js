@@ -1,6 +1,7 @@
 import Router from 'express';
 import navigations from './navigations';
 import collections from './collections';
+import categories from './categories';
 import products from './products';
 
 // import brands from './brands';
@@ -16,6 +17,7 @@ apiRouterV1.get(`/`, async (req, res, next) => {
 
 navigations(apiRouterV1)
 collections(apiRouterV1)
+categories(apiRouterV1)
 products(apiRouterV1)
 
 // users(apiRouterV1)
