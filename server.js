@@ -23,7 +23,7 @@ app.use(cors({
   origin: (origin, callback) => {
     if (typeof origin === 'undefined') {
       callback(null, true);
-    } else if (['http://localhost:3001', 'http://localhost:3000'].indexOf(origin) !== -1) {
+    } else if (JSON.parse(process.env.WHITE_LIST).indexOf(origin) !== -1) {
       callback(null, true)
     } else {
       console.log('Error CORS!')
