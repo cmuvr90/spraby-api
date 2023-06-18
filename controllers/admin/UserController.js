@@ -143,7 +143,7 @@ class UserController {
       res.cookie(SessionConfig.jwtRefreshTokenKey, token, {
         maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
         httpOnly: true,
-        domain: 'api.spra.by'
+        domain: 'admin.spra.by'
       })
 
       return res.sendSuccess({});
