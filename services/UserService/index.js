@@ -3,6 +3,7 @@ import {v4 as uuidv4} from 'uuid';
 import LoginError from '../ErrorService/LoginError';
 import RegisterError from '../ErrorService/RegisterError';
 import AuthError from '../ErrorService/AuthError';
+import PassportService from '../PassportService';
 
 export default class UserService {
 
