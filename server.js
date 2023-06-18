@@ -18,7 +18,6 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
 app.use(express.static('files'))
 app.use(cors({
-  credentials: true,
   origin: (origin, callback) => {
     if (typeof origin === 'undefined') {
       callback(null, true);
@@ -28,7 +27,9 @@ app.use(cors({
       console.log('Error CORS!')
       callback(new Error())
     }
-  }
+  },
+  credentials: true,
+  exposedHeaders: ["set-cookie"],
 }));
 
 ProductService.initialize(app);
