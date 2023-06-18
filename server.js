@@ -7,6 +7,7 @@ import {apiRouterV1, apiAdmin, router} from './routes';
 import container from './ioc';
 import {error, init} from './middlewares';
 import fileUpload from 'express-fileupload';
+import ProductService from "./services/PassportService";
 
 const app = express();
 
@@ -16,15 +17,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
 app.use(express.static('files'))
-
-app.set('ioc', container);
+app.enable('trust proxy')
 app.use(cors({
-  credentials: true,
   origin: (origin, callback) => {
-
-    console.log('process.env = ', process.env);
-    console.log('origin = ', origin);
-
     if (typeof origin === 'undefined') {
       callback(null, true);
     } else if (JSON.parse(process.env.WHITE_LIST).indexOf(origin) !== -1) {
@@ -33,8 +28,14 @@ app.use(cors({
       console.log('Error CORS!')
       callback(new Error())
     }
-  }
+  },
+  credentials: true,
+  exposedHeaders: ["set-cookie"],
 }));
+
+ProductService.initialize(app);
+
+app.set('ioc', container);
 
 router.get('/', (req, res, next) => {
   return res.send(`<div style="margin: 200px auto; text-align: center;">SPRA.BY API 🚀</div>`);

@@ -29,11 +29,19 @@ export default class UserService {
     const user = await this.user.findOne({email});
     if (!user) LoginError.badRequestError('Email or password is invalid');
 
-    const isEquals = await this.isEqualsPasswords(password, user.getPassword());
-    if (!isEquals) LoginError.badRequestError('Email or password is invalid');
+    const isCompare = await bcrypt.compare(password, user.getPassword());
+    if (!isCompare) LoginError.badRequestError('Email or password is invalid');
 
-    const tokens = await this.getUserJWTokens(user);
-    return {...tokens, user: user.toJSON()}
+    return {token: PassportService.generateToken({id: user.toJSON()})}
+
+    // const user = await this.user.findOne({email});
+    // if (!user) LoginError.badRequestError('Email or password is invalid');
+    //
+    // const isEquals = await this.isEqualsPasswords(password, user.getPassword());
+    // if (!isEquals) LoginError.badRequestError('Email or password is invalid');
+    //
+    // const tokens = await this.getUserJWTokens(user);
+    // return {...tokens, user: user.toJSON()}
   }
 
   /**
