@@ -131,18 +131,35 @@ class UserController {
    */
   login = async (req, res, next) => {
     try {
+      console.log(req.body);
       const UserService = req.getService(TYPES.UserService);
       const SessionConfig = req.getService(TYPES.SessionConfig);
 
       const {email, password} = req.body;
-      const {accessToken, refreshToken, user} = await UserService.login(email, password);
+      const token = await UserService.login(email, password);
 
-      res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
+      console.log('token = ', token);
+
+      res.cookie(SessionConfig.jwtRefreshTokenKey, token, {
         maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
         httpOnly: true
       })
 
-      return res.sendSuccess({accessToken, user});
+      return res.sendSuccess({});
+
+
+      // const UserService = req.getService(TYPES.UserService);
+      // const SessionConfig = req.getService(TYPES.SessionConfig);
+      //
+      // const {email, password} = req.body;
+      // const {accessToken, refreshToken, user} = await UserService.login(email, password);
+      //
+      // res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
+      //   maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
+      //   httpOnly: true
+      // })
+      //
+      // return res.sendSuccess({accessToken, user});
     } catch (e) {
       next(e);
     }
