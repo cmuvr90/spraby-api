@@ -21,6 +21,10 @@ app.set('ioc', container);
 app.use(cors({
   credentials: true,
   origin: (origin, callback) => {
+
+    console.log('process.env = ', process.env);
+    console.log('origin = ', origin);
+
     if (typeof origin === 'undefined') {
       callback(null, true);
     } else if (JSON.parse(process.env.WHITE_LIST).indexOf(origin) !== -1) {
