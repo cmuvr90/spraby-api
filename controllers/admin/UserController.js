@@ -142,7 +142,6 @@ class UserController {
 
       res.cookie(SessionConfig.jwtRefreshTokenKey, token, {
         httpOnly: true,
-        domain: 'admin.spra.by'
       })
 
       return res.sendSuccess({});
