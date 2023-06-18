@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
 app.use(express.static('files'))
+app.enable('trust proxy')
 app.use(cors({
   origin: (origin, callback) => {
     if (typeof origin === 'undefined') {
