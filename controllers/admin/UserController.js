@@ -210,7 +210,11 @@ class UserController {
       const SessionConfig = req.getService(TYPES.SessionConfig);
 
       const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
+      console.log('refreshToken = ', refreshToken);
+
       const user = await UserService.getAuthUser(refreshToken);
+      console.log('user = ', user);
+
       if (!user) AuthError.unauthorizedError();
 
       return res.sendSuccess({user});
