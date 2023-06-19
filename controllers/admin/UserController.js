@@ -135,6 +135,9 @@ class UserController {
       const SessionConfig = req.getService(TYPES.SessionConfig);
 
       const {email, password} = req.body;
+      console.log('login email = ', email);
+      console.log('login password = ', password);
+
       const {accessToken, refreshToken, user} = await UserService.login(email, password);
 
       res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
@@ -142,6 +145,12 @@ class UserController {
         httpOnly: true,
         domain: 'spra.by'
       })
+
+      console.log('login response = ', SessionConfig.jwtRefreshTokenKey, refreshToken, {
+        maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
+        httpOnly: true,
+        domain: 'spra.by'
+      });
 
       return res.sendSuccess({accessToken, user});
     } catch (e) {
@@ -162,6 +171,8 @@ class UserController {
       const SessionConfig = req.getService(TYPES.SessionConfig);
 
       const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
+
+
       await UserService.logout(refreshToken);
       res.clearCookie(SessionConfig.jwtRefreshTokenKey);
 
