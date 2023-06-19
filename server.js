@@ -7,7 +7,6 @@ import {apiRouterV1, apiAdmin, router} from './routes';
 import container from './ioc';
 import {error, init} from './middlewares';
 import fileUpload from 'express-fileupload';
-import ProductService from "./services/PassportService";
 
 const app = express();
 
@@ -17,7 +16,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
 app.use(express.static('files'))
-app.enable('trust proxy')
 app.use(cors({
   origin: (origin, callback) => {
     if (typeof origin === 'undefined') {
@@ -32,8 +30,6 @@ app.use(cors({
   credentials: true,
   exposedHeaders: ["set-cookie"],
 }));
-
-ProductService.initialize(app);
 
 app.set('ioc', container);
 
