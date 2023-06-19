@@ -133,6 +133,7 @@ class UserController {
     try {
       const UserService = req.getService(TYPES.UserService);
       const SessionConfig = req.getService(TYPES.SessionConfig);
+      const Config = req.getService(TYPES.Config);
 
       const {email, password} = req.body;
       console.log('login email = ', email);
@@ -143,13 +144,13 @@ class UserController {
       res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
         maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
         httpOnly: true,
-        domain: 'spra.by'
+        domain: Config.domain
       })
 
       console.log('login response = ', SessionConfig.jwtRefreshTokenKey, refreshToken, {
         maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
         httpOnly: true,
-        domain: 'spra.by'
+        domain: Config.domain
       });
 
       return res.sendSuccess({accessToken, user});
@@ -221,10 +222,10 @@ class UserController {
       const SessionConfig = req.getService(TYPES.SessionConfig);
 
       const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
-      console.log('refreshToken = ', refreshToken);
+      console.log('getAuthUser refreshToken = ', refreshToken, req.cookies);
 
       const user = await UserService.getAuthUser(refreshToken);
-      console.log('user = ', user);
+      console.log('getAuthUser user = ', user);
 
       if (!user) AuthError.unauthorizedError();
 

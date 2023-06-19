@@ -112,6 +112,7 @@ container.bind(TYPES.FileService).to(FileService);
 container.bind(TYPES.SettingsService).to(SettingsService);
 container.bind(TYPES.PermissionService).to(PermissionService);
 
+container.bind(TYPES.Config).toDynamicValue(() => config);
 container.bind(TYPES.LogConfig).toDynamicValue(() => (config.log));
 container.bind(TYPES.SessionConfig).toDynamicValue(() => (config.session));
 

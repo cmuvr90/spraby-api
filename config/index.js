@@ -4,6 +4,7 @@ import process from 'process';
 dotenv.config();
 
 module.exports = {
+  domain: process.env.DOMAIN,
   port: process.env.PORT ? +process.env.PORT : 80,
   database: {
     url: process.env.MONGO_CONNECTION_URI

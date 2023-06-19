@@ -22,6 +22,7 @@ export const TYPES = {
   SettingsService: 'SettingsService',
   PermissionService: 'PermissionService',
 
+  Config: 'Config',
   LogConfig: 'LogConfig',
   SessionConfig: 'SessionConfig'
 };

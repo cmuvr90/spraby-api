@@ -18,6 +18,7 @@ app.use(express.static('public'))
 app.use(express.static('files'))
 app.use(cors({
   origin: (origin, callback) => {
+    console.log('origin = ', origin);
     if (typeof origin === 'undefined') {
       callback(null, true);
     } else if (JSON.parse(process.env.WHITE_LIST).indexOf(origin) !== -1) {
