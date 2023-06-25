@@ -6,6 +6,6 @@ services:
       dockerfile: Dockerfile
     restart: always
     volumes:
-      - public:/app/public
+      - ./public:/app/public
     ports:
       - 3002:3002
