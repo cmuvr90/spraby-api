@@ -136,27 +136,13 @@ class UserController {
       const SessionConfig = req.getService(TYPES.SessionConfig);
       const Config = req.getService(TYPES.Config);
 
-
-
       const {email, password} = req.body;
-      console.log('login email = ', email);
-      console.log('login password = ', password);
-
       const {accessToken, refreshToken, user} = await UserService.login(email, password);
-
-
-
       res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
         maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
         httpOnly: true,
         domain: Config.domain
       })
-
-      console.log('login response = ', SessionConfig.jwtRefreshTokenKey, refreshToken, {
-        maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
-        httpOnly: true,
-        domain: Config.domain
-      });
 
       return res.sendSuccess({accessToken, user});
     } catch (e) {
@@ -177,8 +163,6 @@ class UserController {
       const SessionConfig = req.getService(TYPES.SessionConfig);
 
       const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
-
-
       await UserService.logout(refreshToken);
       res.clearCookie(SessionConfig.jwtRefreshTokenKey);
 
@@ -199,8 +183,6 @@ class UserController {
     try {
       const UserService = req.getService(TYPES.UserService);
       const SessionConfig = req.getService(TYPES.SessionConfig);
-
-
 
       const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
       const data = await UserService.refresh(refreshToken);
@@ -228,15 +210,8 @@ class UserController {
       const UserService = req.getService(TYPES.UserService);
       const SessionConfig = req.getService(TYPES.SessionConfig);
 
-      console.log('CLEAR COOKIE');
-      res.clearCookie(SessionConfig.jwtRefreshTokenKey);
-      console.log('CLEAR COOKIE END');
-
       const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
-      console.log('getAuthUser refreshToken = ', refreshToken, req.cookies);
-
       const user = await UserService.getAuthUser(refreshToken);
-      console.log('getAuthUser user = ', user);
 
       if (!user) AuthError.unauthorizedError();
 
