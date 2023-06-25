@@ -131,15 +131,20 @@ class UserController {
    */
   login = async (req, res, next) => {
     try {
+
       const UserService = req.getService(TYPES.UserService);
       const SessionConfig = req.getService(TYPES.SessionConfig);
       const Config = req.getService(TYPES.Config);
+
+      res.clearCookie(SessionConfig.jwtRefreshTokenKey);
 
       const {email, password} = req.body;
       console.log('login email = ', email);
       console.log('login password = ', password);
 
       const {accessToken, refreshToken, user} = await UserService.login(email, password);
+
+
 
       res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
         maxAge: getTime(SessionConfig.jwtRefreshTokenMax),

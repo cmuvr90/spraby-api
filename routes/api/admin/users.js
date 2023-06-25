@@ -9,7 +9,6 @@ import {auth} from '../../../middlewares';
 export default function (router) {
   router.post('/users/login', LoginRequest, UserController.login);
   router.post('/users/logout', UserController.logout);
-  router.get('/users/test/logout', UserController.logout);
   router.post('/users/register', RegisterRequest, UserController.register);
   router.get('/users/refresh', UserController.refresh);
   router.get('/users/auth-user', UserController.getAuthUser);
