@@ -136,7 +136,7 @@ class UserController {
       const SessionConfig = req.getService(TYPES.SessionConfig);
       const Config = req.getService(TYPES.Config);
 
-      res.clearCookie(SessionConfig.jwtRefreshTokenKey);
+
 
       const {email, password} = req.body;
       console.log('login email = ', email);
@@ -199,6 +199,8 @@ class UserController {
     try {
       const UserService = req.getService(TYPES.UserService);
       const SessionConfig = req.getService(TYPES.SessionConfig);
+
+      res.clearCookie(SessionConfig.jwtRefreshTokenKey);
 
       const refreshToken = req.cookies[SessionConfig.jwtRefreshTokenKey];
       const data = await UserService.refresh(refreshToken);
