@@ -5,5 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
+    volumes:
+      - public:/app/public
     ports:
       - 3002:3002
