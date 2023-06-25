@@ -108,6 +108,8 @@ class BrandController {
       const id = req?.body?.id;
 
       const BrandService = req.getService(TYPES.BrandService);
+      const Config = req.getService(TYPES.Config);
+
       const brand = await BrandService.brand.findById(id);
       if (!brand) MainError.badRequestError();
 
@@ -121,7 +123,8 @@ class BrandController {
 
       res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
         maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
-        httpOnly: true
+        httpOnly: true,
+        domain: Config.domain
       })
 
       return res.sendSuccess({accessToken, user});
