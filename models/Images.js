@@ -15,7 +15,7 @@ Images.set('toJSON', {
     delete ret._id;
     delete ret.__v;
 
-    ret.src = !ret.src.includes('http') ? process.env.HOST + ':' + process.env.PORT + '/' + ret.src : ret.src; //@todo
+    ret.src = !ret.src.includes('http') ? process.env.HOST + ':' + (process.env.HOST.includes('localhost') ? process.env.PORT : '') + '/' + ret.src : ret.src; //@todo
   }
 });
 
