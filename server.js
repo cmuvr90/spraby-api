@@ -10,27 +10,31 @@ import fileUpload from 'express-fileupload';
 
 const app = express();
 
+app.use(cors({
+  origin: (origin, callback) => {
+    console.log('origin = ', origin);
+
+    callback(null, true)
+
+    // if (typeof origin === 'undefined') {
+    //   callback(null, true);
+    // } else if (JSON.parse(process.env.WHITE_LIST).indexOf(origin) !== -1) {
+    //   callback(null, true)
+    // } else {
+    //   console.log('Error CORS!')
+    //   callback(new Error())
+    // }
+  },
+  credentials: true,
+  // exposedHeaders: ["set-cookie"],
+}));
 app.use(fileUpload());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
 app.use(express.static('files'))
-app.use(cors({
-  origin: (origin, callback) => {
-    console.log('origin = ', origin);
-    if (typeof origin === 'undefined') {
-      callback(null, true);
-    } else if (JSON.parse(process.env.WHITE_LIST).indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      console.log('Error CORS!')
-      callback(new Error())
-    }
-  },
-  credentials: true,
-  exposedHeaders: ["set-cookie"],
-}));
+
 
 app.set('ioc', container);
 
