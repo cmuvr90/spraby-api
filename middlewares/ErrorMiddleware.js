@@ -7,6 +7,8 @@ import mongoose from 'mongoose';
 const ErrorMiddleware = async (err, req, res, next) => {
   const log = req.getService(TYPES.LogService);
 
+  console.log('err = ', JSON.stringify(err));
+
   try {
     if (err instanceof LoginError) {
       await log.createLogger('LoginError').error(err.message, err.code, err.errors);
