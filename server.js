@@ -7,6 +7,7 @@ import {apiRouterV1, apiAdmin, router} from './routes';
 import container from './ioc';
 import {error, init} from './middlewares';
 import fileUpload from 'express-fileupload';
+import axios from 'axios';
 
 const app = express();
 
@@ -47,6 +48,14 @@ app.use('/', router);
 app.use('/api/v1', apiRouterV1);
 app.use('/api/admin', apiAdmin);
 app.use(error);
+
+try {
+  console.log('QUERY = ', 'https://api.spra.by/api/v1/navigations/main/navigations/main');
+  const response = await axios.get('https://api.spra.by/api/v1/navigations/main/navigations/main');
+  console.log('RESPONSE = ', response?.data);
+} catch (e) {
+  console.log('ERROR = ', e);
+}
 
 (async function start() {
   const isConnected = await connectToMongo(config.database.url);
