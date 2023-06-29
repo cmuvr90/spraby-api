@@ -57,9 +57,9 @@ app.use(error);
   app.listen(config.port, function () {
     console.log(`✔ Server started at http://localhost:${config.port}`)
 
-    console.log('QUERY = ', 'https://api.spra.by/api/v1/navigations/main/navigations/main');
-    
-    axios.get('https://api.spra.by/api/v1/navigations/main/navigations/main').then(response => {
+    console.log('QUERY = ', 'https://www.api.spra.by/api/v1/navigations/main/navigations/main');
+
+    axios.get('https://www.api.spra.by/api/v1/navigations/main/navigations/main').then(response => {
       console.log('RESPONSE = ', response?.data);
     }).catch(e => {
       console.log('ERROR = ', e);
