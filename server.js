@@ -49,13 +49,6 @@ app.use('/api/v1', apiRouterV1);
 app.use('/api/admin', apiAdmin);
 app.use(error);
 
-try {
-  console.log('QUERY = ', 'https://api.spra.by/api/v1/navigations/main/navigations/main');
-  const response = await axios.get('https://api.spra.by/api/v1/navigations/main/navigations/main');
-  console.log('RESPONSE = ', response?.data);
-} catch (e) {
-  console.log('ERROR = ', e);
-}
 
 (async function start() {
   const isConnected = await connectToMongo(config.database.url);
@@ -63,5 +56,25 @@ try {
 
   app.listen(config.port, function () {
     console.log(`✔ Server started at http://localhost:${config.port}`)
+
+    console.log('QUERY = ', 'https://api.spra.by/api/v1/navigations/main/navigations/main');
+    
+    axios.get('https://api.spra.by/api/v1/navigations/main/navigations/main').then(response => {
+      console.log('RESPONSE = ', response?.data);
+    }).catch(e => {
+      console.log('ERROR = ', e);
+    }).finally(() => {
+      console.log('RESPONSE finally ');
+    })
+
+    // try {
+    //   console.log('QUERY = ', 'https://api.spra.by/api/v1/navigations/main/navigations/main');
+    //   const response = await axios.get('https://api.spra.by/api/v1/navigations/main/navigations/main');
+    //   console.log('RESPONSE = ', response?.data);
+    // } catch (e) {
+    //   console.log('ERROR = ', e);
+    // }
+
+
   })
 })()
