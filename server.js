@@ -59,7 +59,7 @@ app.use(error);
 
     console.log('QUERY = ', 'https://www.api.spra.by/api/v1/navigations/main/navigations/main');
 
-    axios.get('http://localhost:3000').then(response => {
+    axios.get('http://10.1.1.237').then(response => {
       console.log('RESPONSE = ', response);
     }).catch(e => {
       console.log('ERROR = ', e);
