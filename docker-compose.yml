@@ -9,3 +9,9 @@ services:
       - ./public:/app/public
     ports:
       - 3002:3002
+    networks:
+      - spraby_network
+
+networks:
+  spraby_network:
+    external: true
