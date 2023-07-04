@@ -70,7 +70,7 @@ class ProductController {
       const id = req?.params?.id;
       const params = req?.body;
       const ProductService = req.getService(TYPES.ProductService);
-      await ProductService.product.updateById(id, params);
+      await ProductService.product.updateProduct(id, params);
       const product = await ProductService.product.getProductJsonById(id);
       return res.sendSuccess(product);
     } catch (e) {

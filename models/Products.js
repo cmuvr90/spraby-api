@@ -223,6 +223,21 @@ Products.statics.createProduct = async function (params) {
 
 /**
  *
+ * @param productId
+ * @param params
+ * @returns {Promise<*>}
+ */
+Products.statics.updateProduct = async function (productId, params) {
+  const data = {};
+
+  if (typeof params?.title !== 'undefined') data['title'] = params.title;
+  if (typeof params?.description !== 'undefined') data['description'] = params.description;
+
+  return this.updateOne({_id: new mongoose.Types.ObjectId(productId)}, data)
+}
+
+/**
+ *
  * @param params
  * @returns {Promise<Promise<*>|*[]>}
  */
