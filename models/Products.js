@@ -232,6 +232,7 @@ Products.statics.updateProduct = async function (productId, params) {
 
   if (typeof params?.title !== 'undefined') data['title'] = params.title;
   if (typeof params?.description !== 'undefined') data['description'] = params.description;
+  if (typeof params?.category !== 'undefined') data['category'] = new mongoose.Types.ObjectId(params.category);
 
   return this.updateOne({_id: new mongoose.Types.ObjectId(productId)}, data)
 }
