@@ -77,6 +77,27 @@ export default class ProductService {
     }
   }
 
+  setMainImage = async (productId, imageId) => {
+    try {
+      const product = await this.product.findById(productId);
+      if (!product) throw Error(`Product ${productId} not found`);
+
+      const mainImageId = product.images.find(i => `${i}` === `${imageId}`);
+      if (!mainImageId) throw Error(`Image ${imageId} not found`);
+
+      const filteredImages = product.images.filter(i => `${i}` !== `${imageId}`);
+      filteredImages.unshift(mainImageId);
+
+      product.images = filteredImages;
+      await product.save();
+
+      return true;
+    } catch (e) {
+      this.log.error(`[ProductService][removeImages] Error: ${e?.message || e}`)
+      return false;
+    }
+  }
+
   /**
    *
    * @param productId

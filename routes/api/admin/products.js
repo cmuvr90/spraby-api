@@ -14,6 +14,7 @@ export default function (router) {
   router.delete('/products/:id', auth, ProductController.delete);
 
   router.post('/products/:id/images', auth, ProductController.createImages);
+  router.put('/products/:id/images/:imageId/main', auth, ProductController.setMainImage);
   router.delete('/products/:id/images', auth, ProductController.deleteImages);
 
   router.post('/products/:id/variants', auth, ProductController.createVariant)

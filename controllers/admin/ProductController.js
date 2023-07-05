@@ -193,6 +193,27 @@ class ProductController {
    * @param next
    * @returns {Promise<*>}
    */
+  setMainImage = async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+      const imageId = req.params.imageId;
+
+      const ProductService = req.getService(TYPES.ProductService);
+      await ProductService.setMainImage(productId, imageId);
+
+      return res.sendSuccess({});
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
   deleteImages = async (req, res, next) => {
     try {
       const id = req.params.id;
