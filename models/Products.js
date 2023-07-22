@@ -10,7 +10,7 @@ const FIELDS = {
   brand: {type: mongoose.Schema.Types.ObjectId, ref: Brands, default: null},
   category: {type: mongoose.Schema.Types.ObjectId, ref: Categories, default: null},
   title: {type: String, required: 'Title is required'},
-  handle: {type: String, required: 'Handle is required', unique: true},
+  handle: {type: String, required: 'Handle is required'},
   description: {type: String, default: null},
   images: [
     {type: mongoose.Schema.Types.ObjectId, ref: Images}
