@@ -5,6 +5,7 @@ import Categories from './Categories';
 import Images from './Images';
 import Variants from './schemas/Variants';
 import {getHandle} from '../services/utilites';
+import {ObjectId} from 'mongodb';
 
 const FIELDS = {
   brand: {type: mongoose.Schema.Types.ObjectId, ref: Brands, default: null},
@@ -12,16 +13,12 @@ const FIELDS = {
   title: {type: String, required: 'Title is required'},
   handle: {type: String, required: 'Handle is required'},
   description: {type: String, default: null},
-  images: [
-    {type: mongoose.Schema.Types.ObjectId, ref: Images}
-  ],
+  images: [{type: mongoose.Schema.Types.ObjectId, ref: Images}],
   variants: [Variants]
 };
 
 const Products = new Model(FIELDS, {
-  timestamps: true,
-  toObject: {virtuals: true},
-  toJSON: {virtuals: true}
+  timestamps: true, toObject: {virtuals: true}, toJSON: {virtuals: true}
 });
 
 Products.pre('deleteOne', {document: true, query: true}, async function () {
@@ -30,8 +27,7 @@ Products.pre('deleteOne', {document: true, query: true}, async function () {
 });
 
 Products.set('toJSON', {
-  virtuals: true,
-  transform: function (doc, ret) {
+  virtuals: true, transform: function (doc, ret) {
     delete ret._id;
     delete ret.__v;
     if (!!ret?.category?.options?.length) delete ret.category.options
@@ -165,21 +161,15 @@ Products.statics.getProductsJsonById = async function (ids = []) {
     _id: {$in: ids.map(i => new mongoose.Types.ObjectId(i))}
   } : {};
 
-  return await this.find(params).populate([
-    {
-      path: 'category',
-      populate: 'options'
-    },
-    {
-      path: 'brand'
-    },
-    {
-      path: 'images'
-    },
-    {
-      path: 'variants.image'
-    }
-  ]);
+  return await this.find(params).populate([{
+    path: 'category', populate: 'options'
+  }, {
+    path: 'brand'
+  }, {
+    path: 'images'
+  }, {
+    path: 'variants.image'
+  }]);
 }
 
 /**
@@ -188,21 +178,15 @@ Products.statics.getProductsJsonById = async function (ids = []) {
  * @returns {Promise<*|null>}
  */
 Products.statics.getProductJsonById = async function (id) {
-  return await this.findOne({_id: new mongoose.Types.ObjectId(id)}).populate([
-    {
-      path: 'category',
-      populate: 'options'
-    },
-    {
-      path: 'brand'
-    },
-    {
-      path: 'images'
-    },
-    {
-      path: 'variants.image'
-    }
-  ]);
+  return await this.findOne({_id: new ObjectId(id)}).populate([{
+    path: 'category', populate: 'options'
+  }, {
+    path: 'brand'
+  }, {
+    path: 'images'
+  }, {
+    path: 'variants.image'
+  }]);
 }
 
 /**
@@ -247,40 +231,26 @@ Products.statics.getProductsByParams = async function (params) {
   const options = params?.options ?? null;
 
   const match = options?.length ? {
-    $or: options.map(i => ({
-      $and: [
-        {'variants.values.option': new mongoose.Types.ObjectId(i.optionId)},
-        {'variants.values.value': {$in: i.values}}
-      ]
+    $and: options.map(i => ({
+      $and: [{'variants.values.option': {$in: i.ids.map(id => new mongoose.Types.ObjectId(id))}}, {'variants.values.value': {$in: i.values}}]
     }))
   } : {};
 
-  const products = await this.aggregate([
-    {
-      $match: match
-    },
-    {
-      $lookup: {
-        from: "categories",
-        localField: "category",
-        foreignField: "_id",
-        as: "category",
-        pipeline: [
-          {
-            $match: {$expr: {$in: ["$_id", categories.map(id => new mongoose.Types.ObjectId(id))]}}
-          }
-        ]
-      }
-    },
-    {
-      $unwind: "$category"
-    },
-    {
-      $project: {
-        "_id": 1
-      }
+  const products = await this.aggregate([{
+    $match: match
+  }, {
+    $lookup: {
+      from: "categories", localField: "category", foreignField: "_id", as: "category", pipeline: [{
+        $match: {$expr: {$in: ["$_id", categories.map(id => new mongoose.Types.ObjectId(id))]}}
+      }]
     }
-  ]).exec();
+  }, {
+    $unwind: "$category"
+  }, {
+    $project: {
+      "_id": 1
+    }
+  }]).exec();
   const productIds = products.map(i => i._id);
   return productIds?.length ? this.getProductsJsonById(productIds) : [];
 }

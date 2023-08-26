@@ -138,6 +138,7 @@ class UserController {
 
       const {email, password} = req.body;
       const {accessToken, refreshToken, user} = await UserService.login(email, password);
+
       res.cookie(SessionConfig.jwtRefreshTokenKey, refreshToken, {
         maxAge: getTime(SessionConfig.jwtRefreshTokenMax),
         httpOnly: true,
