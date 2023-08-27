@@ -13,6 +13,8 @@ class NavigationController {
     try {
       const SettingsService = req.getService(TYPES.SettingsService);
       const navigation = await SettingsService.navigation.getNavigationJsonByType('main');
+
+      console.log('/navigations/main', navigation?.body ?? []);
       return res.sendSuccess(navigation?.body ?? []);
     } catch (e) {
       next(e)

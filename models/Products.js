@@ -178,15 +178,19 @@ Products.statics.getProductsJsonById = async function (ids = []) {
  * @returns {Promise<*|null>}
  */
 Products.statics.getProductJsonById = async function (id) {
-  return await this.findOne({_id: new ObjectId(id)}).populate([{
-    path: 'category', populate: 'options'
-  }, {
-    path: 'brand'
-  }, {
-    path: 'images'
-  }, {
-    path: 'variants.image'
-  }]);
+  try {
+    return await this.findOne({_id: new ObjectId(id)}).populate([{
+      path: 'category', populate: 'options'
+    }, {
+      path: 'brand'
+    }, {
+      path: 'images'
+    }, {
+      path: 'variants.image'
+    }]);
+  } catch (e) {
+    return null;
+  }
 }
 
 /**
