@@ -176,11 +176,13 @@ class ProductController {
   createImages = async (req, res, next) => {
     try {
       const id = req.params.id;
+
       const ProductService = req.getService(TYPES.ProductService);
       const isUploaded = await ProductService.uploadAndSaveImages(id, Object.values(req?.files));
+      if (!isUploaded) throw Error('Error upload images');
 
-      const message = isUploaded ? 'Upload success' : 'Uploaded with errors';
-      return res.sendSuccess({message, error: !isUploaded});
+      const product = await ProductService.product.getProductJsonById(id);
+      return res.sendSuccess(product);
     } catch (e) {
       next(e)
     }
@@ -200,8 +202,9 @@ class ProductController {
 
       const ProductService = req.getService(TYPES.ProductService);
       await ProductService.setMainImage(productId, imageId);
+      const product = await ProductService.product.getProductJsonById(productId);
 
-      return res.sendSuccess({});
+      return res.sendSuccess(product);
     } catch (e) {
       next(e)
     }
@@ -219,8 +222,10 @@ class ProductController {
       const id = req.params.id;
       const ProductService = req.getService(TYPES.ProductService);
       const isRemoved = await ProductService.removeImages(id, req?.query.ids);
-      const message = isRemoved ? 'Removed success' : 'Removed with errors';
-      return res.sendSuccess({message, error: !isRemoved});
+      if (!isRemoved) throw Error('Removed with errors');
+
+      const product = await ProductService.product.getProductJsonById(id);
+      return res.sendSuccess(product);
     } catch (e) {
       next(e)
     }
