@@ -10,21 +10,30 @@ import {TYPES} from '../ioc/types';
 
 const AuthMiddleware = async (req, res, next) => {
   try {
-    const authorizationHeader = req.headers.authorization;
-    if (!authorizationHeader) AuthError.unauthorizedError();
 
-    const accessToken = authorizationHeader.split(' ').pop();
-    if (!accessToken) AuthError.unauthorizedError();
+    console.log(`|========> [${req.getMethod()}] * ${req.getPath()}`)
 
-    const userData = req.getService(TYPES.SessionService).validateAccessToken(accessToken);
-    if (!userData) AuthError.unauthorizedError();
+    // console.log('HEADERS = ', req.headers);
 
-    req.user = userData;
+    const userId = req.headers.userid;
 
-    const isCheck = req.getService(TYPES.PermissionService).check(req);
-    if (!isCheck) AuthError.unauthorizedError();
+    if (!userId) AuthError.unauthorizedError();
 
-    const user = await req.getService(TYPES.UserService).user.getUserJsonByEmail(userData.email)
+    // const authorizationHeader = req.headers.authorization;
+    // if (!authorizationHeader) AuthError.unauthorizedError();
+    //
+    // const accessToken = authorizationHeader.split(' ').pop();
+    // if (!accessToken) AuthError.unauthorizedError();
+    //
+    // const userData = req.getService(TYPES.SessionService).validateAccessToken(accessToken);
+    // if (!userData) AuthError.unauthorizedError();
+
+    // req.user = userData;
+    //
+    // const isCheck = req.getService(TYPES.PermissionService).check(req);
+    // if (!isCheck) AuthError.unauthorizedError();
+
+    const user = await req.getService(TYPES.UserService).user.getUserJsonById(userId)
     if (!user) AuthError.unauthorizedError();
 
     req.user = user;
