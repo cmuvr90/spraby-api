@@ -5,8 +5,7 @@ import Categories from '../../models/Categories';
 import Collections from '../../models/Collections';
 import Users from '../../models/Users';
 import Brands from '../../models/Brands';
-// import Variants from '../../models/Variants';
-// import Products from '../../models/Products';
+import Settings from "../../models/Settings";
 
 class SeedCommand {
 
@@ -21,7 +20,8 @@ class SeedCommand {
    */
   async handle(params) {
     // await this.createOptions();
-    await this.createCategories();
+    // await this.createCategories();
+    await this.createSettings();
     // await this.createCollections();
     // await this.createUsers();
     // await this.createBrands();
@@ -113,6 +113,16 @@ class SeedCommand {
     await Collections.deleteMany();
     await Collections.insertMany(collections);
     console.log('create collections...');
+  }
+
+  /**
+   *
+   * @returns {Promise<void>}
+   */
+  async createSettings() {
+    await Settings.insertMany([{
+      information: '',
+    }]);
   }
 
   /**

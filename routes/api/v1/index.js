@@ -3,6 +3,7 @@ import navigations from './navigations';
 import collections from './collections';
 import categories from './categories';
 import products from './products';
+import settings from './settings';
 
 // import brands from './brands';
 // import options from './options';
@@ -19,6 +20,7 @@ navigations(apiRouterV1)
 collections(apiRouterV1)
 categories(apiRouterV1)
 products(apiRouterV1)
+settings(apiRouterV1)
 
 // users(apiRouterV1)
 // brands(apiRouterV1)

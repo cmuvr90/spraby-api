@@ -8,6 +8,7 @@ export const TYPES = {
   SessionModel: 'SessionModel',
   ImageModel: 'ImageModel',
   NavigationsModel: 'NavigationsModel',
+  SettingsModel: 'SettingsModel',
 
   UserService: 'UserService',
   BrandService: 'BrandService',

@@ -11,6 +11,7 @@ import ProductModel from '../models/Products';
 import SessionModel from '../models/Sessions';
 import ImageModel from '../models/Images';
 import NavigationModel from '../models/Navigations';
+import SettingsModel from '../models/Settings';
 
 import LogService from '../services/LogService';
 import UserService from '../services/UserService';
@@ -75,7 +76,8 @@ decorate(injectable(), FileService);
 
 //FileService
 decorate(inject(TYPES.NavigationsModel), SettingsService, 0);
-decorate(inject(TYPES.LogService), SettingsService, 1);
+decorate(inject(TYPES.SettingsModel), SettingsService, 1);
+decorate(inject(TYPES.LogService), SettingsService, 2);
 decorate(injectable(), SettingsService);
 
 decorate(inject(TYPES.UserService), PermissionService, 0);
@@ -98,6 +100,7 @@ container.bind(TYPES.ProductModel).toDynamicValue(() => ProductModel);
 container.bind(TYPES.SessionModel).toDynamicValue(() => SessionModel);
 container.bind(TYPES.ImageModel).toDynamicValue(() => ImageModel);
 container.bind(TYPES.NavigationsModel).toDynamicValue(() => NavigationModel);
+container.bind(TYPES.SettingsModel).toDynamicValue(() => SettingsModel);
 
 container.bind(TYPES.UserService).to(UserService);
 container.bind(TYPES.BrandService).to(BrandService);
